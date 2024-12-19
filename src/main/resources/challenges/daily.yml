@@ -1,0 +1,285 @@
+gui:
+  # This is the title at the top of the gui
+  window-name: "&l&eDaily Challenges"
+  # This is the structure. Each row much have 9 characters (ignoring spaces), and it cannot be more than 6 rows in length.
+  # '.' is a blank character that represents the contents of a list.
+  structure:
+    - "B # # # # # # # #"
+    - "# . . . . . . . #"
+    - "# . . . . . . . #"
+    - "# . . . . . . . #"
+    - "# . . . . . . . #"
+    - "< # # # # # # # >"
+
+  # Each character, besides spaces, has an attached itemstack. Define the itemstack here
+  ingredients:
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    'B':
+      material: BARRIER
+      name: "&l&eBack to Main Page"
+      lore:
+        - "&7Click me to go back to the challenge menu!"
+      commands: #Commands executed on click
+        - "execute as {player} run challenges" # this will return them to the base menu
+    '<':
+      material: ARROW
+      name: "&l&ePrevious"
+      back-page: true
+      lore:
+        - "&7Click me to go to the previous page."
+    '>':
+      material: ARROW
+      next-page: true
+      name: "&l&eNext"
+      lore:
+        - "&7Click me to go to the next page."
+
+# These are the challenges found inside this gui.
+challenge-list:
+  # How many challenges a player can attempt at the same time. Does not include challenges that dont require selection
+  max-challenges-per-player: 1
+
+  # The list of challenges.
+  challenges:
+    "Catching Challenge":
+      # If set to false, this challenge does not need to be clicked in order to be started.
+      needs-selection: true
+      # The time limit to complete this challenge accepts 30d24h60m60s format.
+      time-limit: "24h"
+      # This is used inside the item's lore and in the message sent when a challenge is completed
+      description:
+        - "&7Travel the world and catch 10 Pokémon for research!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &7+2500$"
+        - "    &d- &716 Ultra Balls"
+      # This is the itemstack that displays in the gui
+      display-item:
+        # supports modded items and vanilla items. for modded items, include their initial tag such as "cobblemon:master_ball"
+        material: cobblemon:master_ball
+        name: "&e&lCatch 10 Pokémon"
+        # {progression_status} can be customized in config.yml under Messages
+        # {description} is the same as shown above
+        # {tracking-tag} is the countdown timer before a challenge has expired and must be restarted.
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      # Each challenge can have multiple challenges. List each one under a different number which is used to sort them, so their exact value doesnt actually matter.
+      # See config.yml for more information about each challenge requirement.
+      requirements:
+        1:
+          Catch_Pokemon:
+            pokename: any
+            shiny: false
+            type: any
+            ball: any
+            amount: 10
+            time_of_day: any
+            is_legendary: false
+            is_ultra_beast: false
+      # These commands will be sent when all requirements have been completed.
+      # {player} will be replaced with their username.
+      rewards:
+        commands:
+          - "give {player} cobblemon:ultra_ball 16"
+          - "eco give {player} 2500"
+
+
+
+
+
+    "Harvesting Challenge":
+      needs-selection: true
+      time-limit: "24h"
+      description:
+        - "&7Pick 10 berries and apricorns from around the world!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &7+500$"
+      display-item:
+        material: cobblemon:oran_berry
+        name: "&e&lHarvest 10 Berries"
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      requirements:
+        1:
+          harvest_berry:
+            type: any
+            amount: 10
+        2:
+          harvest_apricorn:
+            type: any
+            amount: 10
+      rewards:
+        commands:
+          - "give {player} cobblemon:oran_berry 4"
+          - "eco give {player} 500"
+
+    "Evolve 3 Pokémon":
+      needs-selection: true
+      time-limit: "24h"
+      description:
+        - "&7Evolve 3 of your Pokémon!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &73 Rare Candies"
+        - "    &d- &7200$"
+      display-item:
+        material: cobblemon:rare_candy
+        name: "&e&lEvolve 3 Pokémon"
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      requirements:
+        1:
+          Evolve_Pokemon:
+            pokename: any
+            amount: 3
+            shiny: false
+            type: any
+            ball: any
+            time_of_day: any
+      rewards:
+        commands:
+          - "give {player} cobblemon:rare_candy 3"
+          - "eco give {player} 200"
+
+    "Play 15 minutes":
+      needs-selection: true
+      time-limit: "24h"
+      description:
+        - "&7Play for 15 minutes!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &73 Rare Candies"
+        - "    &d- &7200$"
+      display-item:
+        material: COMPASS
+        name: "&e&lPlay for 15 minutes"
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      requirements:
+        1:
+          milestone_time_played:
+            total-seconds: 900
+      rewards:
+        commands:
+          - "give {player} cobblemon:rare_candy 3"
+          - "eco give {player} 200"
+
+    "Mine 5 blocks":
+      needs-selection: true
+      time-limit: "24h"
+      description:
+        - "&7Mine 5 blocks!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &73 Rare Candies"
+        - "    &d- &7200$"
+      display-item:
+        material: DIAMOND_PICKAXE
+        name: "&e&lMine and Place 5 blocks"
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      requirements:
+        1:
+          mine_block:
+            amount: 5
+            type: any
+        2:
+          place_block:
+            amount: 5
+            type: any
+      rewards:
+        commands:
+          - "give {player} cobblemon:rare_candy 3"
+          - "eco give {player} 200"
+
+    "Gain 1000 experience":
+      needs-selection: true
+      time-limit: "24h"
+      description:
+        - "&7Gain 1000 experience!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &73 Rare Candies"
+        - "    &d- &7200$"
+      display-item:
+        material: DIAMOND_PICKAXE
+        name: "&e&lGain 1000 experience"
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      requirements:
+        1:
+          exp_gained:
+            pokename: any
+            shiny: false
+            type: any
+            ball: any
+            amount: 1000
+            time_of_day: any
+            is_legendary: false
+            is_ultra_beast: false
+      rewards:
+        commands:
+          - "give {player} cobblemon:rare_candy 3"
+          - "eco give {player} 200"
+
+    "Level Up Once":
+      needs-selection: true
+      time-limit: "24h"
+      description:
+        - "&7Level up a Pokémon once!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &73 Rare Candies"
+        - "    &d- &7200$"
+      display-item:
+        material: EXPERIENCE_BOTTLE
+        name: "&e&lLevel Up Once"
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+          - " "
+          - "{tracking-tag}"
+      requirements:
+        1:
+          level_up_once:
+            pokename: any
+            shiny: false
+            type: any
+            ball: any
+            amount: 1
+            time_of_day: any
+            is_legendary: false
+            is_ultra_beast: false
+      rewards:
+        commands:
+          - "give {player} cobblemon:rare_candy 3"
+          - "eco give {player} 200"
+

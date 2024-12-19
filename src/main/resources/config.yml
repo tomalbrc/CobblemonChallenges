@@ -1,0 +1,207 @@
+config-version: 1.0.0
+
+# These are customizable messages that appear in chat and sometimes inside of guis.
+Messages:
+  prefix: "&e&lCobblemon &f&lChallenges &8>>>&r"
+  issues:
+    unknown_challenge_list: "{prefix} &cUnknown challenge &e{challenge_list}&c."
+  progression:
+    progression-entry: "{requirement-title}: {progression-string}"
+  commands:
+    opening-base-gui: "{prefix} &7Complete and claim rewards from challenges here!"
+    reload: "{prefix} &2Messages and guis have been reloaded!"
+  requirements:
+    # When listing a player's progress on a challenge, these will be the prefix for that
+    progression-shorthand:
+      catch_pokemon: "Captured"
+      evolve_pokemon: "Evolved"
+      defeat_battler: "Battles Won"
+      harvest_apricorn: "Apricorns Harvested"
+      harvest_berry: "Berries Harvested"
+      mine_block: "Blocks Mined"
+      place_block: "Blocks Placed"
+      complete_challenge: "Challenges Completed"
+      pokemon_scanned: "Pokemon Scanned"
+      pokemon_seen: "Pokemon Seen"
+      milestone_time_played: "Time Played"
+      use_rare_candy: "Rare Candies Used"
+      hatch_egg: "Eggs Hatched"
+      exp_gained: "EXP Gained"
+      level_up_once: "Levels Gained"
+      level_up_to: "Pokemon Leveled"
+      trades_completed: "Trades"
+      fossils_revived: "Fossils Revived"
+  challenges:
+    progression-string: "&f{current} &7/ {target}"
+    completed:
+      - "<center>&e[Challenge Completed]"
+      - "<center>&6&l{challenge}"
+      - "                                 "
+      - "{challenge-description}"
+    progression_status:
+      before-attempt: "&eCan be attempted"
+      during-attempt: "&2Currently in progress"
+      post-completion: "&2Already completed"
+    failure:
+      time-ran-out: "{prefix} &cDaily Quest &6{challenge} &cfailed! You may attempt this challenge again, however any progress made previously has been reset."
+    tracking-tag:
+      before-starting:
+        - "<center>&6&lCLICK TO TRACK"
+        - "<center>&e&l{time-remaining}"
+      after-starting:
+        - "<center>&6&lTRACKING"
+        - "<center>&e&l{time-remaining}"
+
+# This is the menu where each challenge list is displayed.
+# Here you can move the lists and add new ones.
+base-menu:
+  window-name: "&l&eChallenges"
+  structure:
+    - "# # # # # # # # #"
+    - "# - 1 - 2 - 3 - #"
+    - "# # # # # # # # #"
+  ingredients:
+    '#':
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    '1':
+      linked_to: "daily" # Which gui it is referencing
+      material: BOOK
+      name: "&l&6Daily Challenges"
+      lore:
+        - "&7Left click me to see a list of Daily Challenges"
+    '2':
+      linked_to: "weekly" # Which gui it is referencing
+      material: BOOK
+      enchanted-effect: true
+      hiddenTooltips: ALL
+      name: "&l&bWeekly Challenges"
+      lore:
+        - "&7Left click me to see a list of Weekly Challenges"
+    '3':
+      linked_to: "monthly" # Which gui it is referencing
+      material: ENCHANTED_BOOK
+      name: "&l&2Monthly Challenges"
+      lore:
+        - "&7Left click me to see a list of Monthly Challenges"
+
+# This is what the challenge items should default to after being started or completed.
+# Only the material will change currently, so their custom lore and name will persist.
+challenges:
+  active-challenge-item: # Will only replace material of the challenge, not title or lore
+    material: CLOCK
+  completed-challenge-item: # Will only replace material of the challenge, not title or lore
+    material: GREEN_STAINED_GLASS_PANE
+
+# These are examples that will not be loaded. Use this as a reference for what options are available
+# pokename/any: Can be a specific Pokémon name or any. Can include multiple options such as "bulbasaur/ivysaur/venusaur"
+# type/any: Specifies types (e.g., Fire, Water) or any.
+# ball/any: Can specify a type of Poké Ball or any.
+# amount: Represents the number of times an action should occur.
+# time_of_day: Required time to perform this event (morning, day, night).
+# is_legendary/is_ultra_beast: Boolean values for catching legendary or ultra beasts.
+# opponent_type: Specifies whether the opponent is wild, trainer, player, or a gym leader.
+# effectiveness: Describes effectiveness in battle (super-effective, normal, not-very-effective).
+# action: Can be mined, placed, craft, find, sell, buy, etc.
+triggers:
+  Catch_Pokemon: # Catch anything
+    pokename: any/charizard/bulbasaur/mewtwo
+    shiny: false
+    type: any
+    ball: any
+    amount: 1
+    time_of_day: any
+    is_legendary: false
+    is_ultra_beast: false
+  complete_challenge:
+    amount: 1
+    challenge-list: any # This is the challenge list it must come from
+  Defeat_Battler: # Win a battle with these conditions
+    pokename: any
+    pokemon_type: any/any
+    amount: 1
+    shiny: false
+    is_legendary: false
+    is_ultra_beast: false
+    effectiveness: any/1.0/0.5/2.0
+    npc-player-gymleader-wild: any
+  Evolve_Pokemon: # Evolve any pokemon
+    pokename: any
+    amount: 1
+    shiny: false
+    type: any
+    ball: any
+    time_of_day: any
+
+  mine_block: # When a block is broken
+    type: any/stone
+    amount: 5
+  place_block: #When a block is placed
+    type: any/stone
+    amount: 5
+
+  harvested_apricorn: # Harvest an apricorn
+    type: any
+    amount: 1
+  harvested_berry: # Harvest a berry
+    type: any
+    amount: 1
+  milestone_time_played: #Playtime tracker. Counts upwards in 30 second increments
+    total-seconds: 60
+  use_rare_candy:
+    pokename: any
+    amount: 1
+  pokemon_seen: # When a player has fought this pokemon in battle
+    amount: 100
+    pokename: any
+  pokemon_scanned: # This is when a player uses a pokedex to scan a pokemon
+    amount: 100
+    pokename: any
+
+  level_up_once: # When increasing their level by one, at all
+    pokename: any
+    shiny: false
+    type: any
+    ball: any
+    amount: 1
+    time_of_day: any
+    is_legendary: false
+    is_ultra_beast: false
+  level_up_to: # When their level reaches a certain value
+    target level: 100
+    pokename: any
+    shiny: false
+    type: any
+    ball: any
+    amount: 1
+    time_of_day: any
+    is_legendary: false
+    is_ultra_beast: false
+  hatch_egg: # When an egg has finished hatching
+    pokename: any
+    shiny: false
+    type: any
+    ball: any
+    amount: 1
+    time_of_day: any
+    is_legendary: false
+    is_ultra_beast: false
+  trades_completed: # When the trade is completed. This is for the pokemon they sent themselves, not received.
+    pokename: any
+    shiny: false
+    type: any
+    ball: any
+    amount: 1
+    time_of_day: any
+    is_legendary: false
+    is_ultra_beast: false
+  exp_gained: # When exp is gained by a pokemon
+    pokename: any
+    shiny: false
+    type: any
+    ball: any
+    amount: 1
+    time_of_day: any
+    is_legendary: false
+    is_ultra_beast: false
+
