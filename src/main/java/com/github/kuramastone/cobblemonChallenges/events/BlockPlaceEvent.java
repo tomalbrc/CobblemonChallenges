@@ -45,9 +45,15 @@ public class BlockPlaceEvent {
     }
 
     private static InteractionResult trigger(Player player, Level level, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        ChallengeListener.onBlockPlace(new BlockPlaceEvent(level.getBlockState(blockHitResult.getBlockPos()), blockHitResult.getBlockPos(), level, player));
+        try {
+            ChallengeListener.onBlockPlace(new BlockPlaceEvent(level.getBlockState(blockHitResult.getBlockPos()), blockHitResult.getBlockPos(), level, player));
 
-        return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
 }

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.kuramastone"
-version = "1.0.0"
+version = "1.0.1"
 
 architectury {
     platformSetupLoomIde()
@@ -54,15 +54,21 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 
-    include("com.github.kuramastone:BUtilities-Core:$bUtilitiesVersion")
-    implementation("com.github.kuramastone:BUtilities-Core:$bUtilitiesVersion")
-    implementation("net.kyori:adventure-api:4.5.0")
-    implementation("net.kyori:adventure-text-serializer-plain:4.14.0")
+    includeAndImplement("com.github.kuramastone:BUtilities-Core:$bUtilitiesVersion")
+    includeAndImplement("net.kyori:adventure-api:4.17.0")
+    includeAndImplement("net.kyori:examination-api:1.3.0")
+    includeAndImplement("net.kyori:adventure-key:4.17.0")
+    includeAndImplement("net.kyori:adventure-text-serializer-plain:4.14.0")
 
     //modImplementation("com.cobblemon:fabric:1.6.0+1.21-SNAPSHOT")
     modImplementation(files("libs/Cobblemon-fabric-1.6.0+1.21.1-main-7ae20cc.jar"))
 
     compileOnly("net.luckperms:api:5.4")
+}
+
+fun DependencyHandler.includeAndImplement(dependency: String) {
+    include(dependency)
+    implementation(dependency)
 }
 
 val targetJavaVersion = 21
