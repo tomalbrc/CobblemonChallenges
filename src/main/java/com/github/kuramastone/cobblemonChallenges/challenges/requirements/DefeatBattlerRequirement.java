@@ -14,6 +14,7 @@ import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -103,9 +104,15 @@ public class DefeatBattlerRequirement implements Requirement {
             if(player == null)
                 return false;
 
+            // return if the player didnt win
+            if(!event.getWinners().contains(player))
+                return false;
+
             // check npc/player/gymleader/wild
             StringBuilder enemyType = new StringBuilder();
+            List<BattlePokemon> enemyPokemon = new ArrayList<>();
             for (BattleActor participant : event.getLosers()) {
+                enemyPokemon.addAll(participant.getPokemonList());
                 if (participant instanceof EntityBackedBattleActor<?> entityBackedBattleActor) {
                     if (entityBackedBattleActor.getEntity() instanceof Player)
                         enemyType.append("player/");
@@ -125,41 +132,41 @@ public class DefeatBattlerRequirement implements Requirement {
                 return false;
             }
 
-            for (BattlePokemon battlePokemon : player.getPokemonList()) {
-                Pokemon pokemon = battlePokemon.getEntity().getPokemon();
+            for (BattlePokemon battlePokemon : enemyPokemon) {
+                Pokemon pokemon = battlePokemon.getOriginalPokemon();
                 String pokename = pokemon.getSpecies().getName();
                 boolean shiny = pokemon.getShiny();
                 List<ElementalType> types = StreamSupport.stream(pokemon.getTypes().spliterator(), false).collect(Collectors.toUnmodifiableList());
-                long time_of_day = battlePokemon.getEntity().level().getDayTime();
+                long time_of_day = CobbleChallengeMod.getMinecraftServer().getPlayerList().getPlayer(player.getUuid()).level().getDayTime();
                 boolean is_legendary = pokemon.isLegendary();
                 boolean is_ultra_beast = pokemon.isUltraBeast();
 
                 if (!requirement.pokename.toLowerCase().startsWith("any") &&
                         !requirement.pokename.toLowerCase().contains(pokename.toLowerCase())) {
-                    return false;
+                    continue;
                 }
 
                 if (requirement.shiny && !shiny) {
-                    return false;
+                    continue;
                 }
 
                 if (!requirement.pokemon_type.toLowerCase().startsWith("any") &&
                         !types.stream().map(ElementalType::toString).anyMatch(requirement.pokemon_type::equalsIgnoreCase)) {
-                    return false;
+                    continue;
                 }
 
 
                 if (!requirement.time_of_day.toLowerCase().startsWith("any") &&
                         doesDaytimeMatch(time_of_day, requirement.time_of_day)) {
-                    return false;
+                    continue;
                 }
 
                 if (requirement.is_legendary && !is_legendary) {
-                    return false;
+                    continue;
                 }
 
                 if (requirement.is_ultra_beast && !is_ultra_beast) {
-                    return false;
+                    continue;
                 }
                 return true;
             }
