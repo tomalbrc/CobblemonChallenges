@@ -17,7 +17,7 @@ public class PokemonScannedRequirement implements Requirement {
 
     @YamlKey("amount")
     private int amount = 1; // Number of Pokédex entries to complete
-    @YamlKey(value = "pokename",required = false)
+    @YamlKey(value = "pokename", required = false)
     private String pokename = "any"; // Number of Pokédex entries to complete
 
     public PokemonScannedRequirement() {
@@ -44,7 +44,8 @@ public class PokemonScannedRequirement implements Requirement {
         int maxPossibleToGain = Math.max(0, maxPokedexEntries - currentAmount); // 1
 
         // cant ask them to gain more than the max
-        ccp.progressAmount = this.amount - Math.min(this.amount, maxPossibleToGain);
+        if (this.amount > maxPossibleToGain)
+            ccp.progressAmount = this.amount - maxPossibleToGain;
 
         return ccp;
     }
@@ -70,7 +71,7 @@ public class PokemonScannedRequirement implements Requirement {
         @Override
         public boolean meetsCriteria(PokemonScannedEvent event) {
 
-            if(!StringUtils.doesStringContainCategory(event.getPokedexEntityData().getSpecies().getName(), requirement.pokename)) {
+            if (!StringUtils.doesStringContainCategory(event.getPokedexEntityData().getSpecies().getName(), requirement.pokename)) {
                 return false;
             }
 
