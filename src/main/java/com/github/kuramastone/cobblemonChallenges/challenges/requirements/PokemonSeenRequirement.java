@@ -36,7 +36,7 @@ public class PokemonSeenRequirement implements Requirement {
     @Override
     public Progression<?> buildProgression(PlayerProfile profile) {
         /*
-        Do not ask the player to scan more pokemon than possible
+        Do not ask the player to see more unique pokemon than possible
          */
         PokemonSeenProgression ccp = new PokemonSeenProgression(profile, this);
         int currentAmount = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(profile.getUUID()).getSpeciesRecords().size(); // 99
@@ -44,7 +44,8 @@ public class PokemonSeenRequirement implements Requirement {
         int maxPossibleToGain = Math.max(0, maxPokedexEntries - currentAmount); // 1
 
         // cant ask them to gain more than the max
-        ccp.progressAmount = this.amount - Math.min(this.amount, maxPossibleToGain);
+        if (this.amount > maxPossibleToGain)
+            ccp.progressAmount = this.amount - maxPossibleToGain;
 
         return ccp;
     }
@@ -71,6 +72,11 @@ public class PokemonSeenRequirement implements Requirement {
         public boolean meetsCriteria(PokemonSeenEvent event) {
 
             if (!StringUtils.doesStringContainCategory(event.getPokemon().getSpecies().getName(), requirement.pokename)) {
+                return false;
+            }
+
+            boolean hasSeenBefore = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(event.getPlayerId()).getSpeciesRecords().containsKey(event.getPokemon().getSpecies().resourceIdentifier);
+            if(hasSeenBefore) {
                 return false;
             }
 
