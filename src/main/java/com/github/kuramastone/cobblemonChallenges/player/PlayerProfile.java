@@ -131,7 +131,7 @@ public class PlayerProfile {
     }
 
     public ServerPlayer getPlayerEntity() {
-        if (playerEntity == null) {
+        if (playerEntity == null || playerEntity.isRemoved()) {
             syncPlayer();
         }
 
