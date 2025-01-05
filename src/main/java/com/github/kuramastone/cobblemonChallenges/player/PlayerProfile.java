@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -162,8 +163,13 @@ public class PlayerProfile {
 
     private void dispenseRewards() {
         syncPlayer();
-        for (Reward reward : rewardsToGive) {
-            reward.applyTo(playerEntity);
+        if (playerEntity != null) {
+            for (Reward reward : rewardsToGive) {
+                if (reward != null)
+                    reward.applyTo(playerEntity);
+            }
+
+            rewardsToGive.clear();
         }
     }
 

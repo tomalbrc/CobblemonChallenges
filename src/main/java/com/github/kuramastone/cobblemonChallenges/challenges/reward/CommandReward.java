@@ -15,6 +15,9 @@ public class CommandReward implements Reward {
 
     @Override
     public void applyTo(Player player) {
+        if(command == null)
+            return;
+
         String cmd = command.replace("{player}", player.getName().getString());
 
         MinecraftServer server = CobbleChallengeMod.getMinecraftServer();
@@ -22,7 +25,7 @@ public class CommandReward implements Reward {
         server.getCommands()
                 .performCommand(
                         server.getCommands().getDispatcher()
-                                .parse(new StringReader(cmd), server.createCommandSourceStack()), cmd);
+                                .parse(new StringReader(cmd), server.createCommandSourceStack().withSuppressedOutput()), cmd);
     }
 
     public String getCommand() {
