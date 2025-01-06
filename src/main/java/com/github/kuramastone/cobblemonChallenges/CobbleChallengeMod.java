@@ -32,11 +32,29 @@ public class CobbleChallengeMod implements ModInitializer {
     public void onInitialize() {
         instance = this;
         api = new CobbleChallengeAPI();
-        api.init();
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> minecraftServer = server); // capture minecraftserver
+        ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted); // capture minecraftserver
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> onStopped());
+        startSaveScheduler();
         CommandHandler.register(); // register commands
         registerTrackedEvents();
+    }
+
+    private void onServerStarted(MinecraftServer server) {
+        minecraftServer = server;
+        api.init();
+    }
+
+
+    private void startSaveScheduler() {
+        TickScheduler.scheduleRepeating(20*60*15, ()-> {
+            api.saveProfiles();
+            return true;
+        });
+    }
+
+    private void onStopped() {
+        api.saveProfiles();
     }
 
     private void registerTrackedEvents() {

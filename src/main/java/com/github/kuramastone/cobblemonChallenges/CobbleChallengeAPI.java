@@ -33,7 +33,7 @@ public class CobbleChallengeAPI implements SimpleAPI {
     }
 
     public void loadProfiles() {
-        YamlConfig data = new YamlConfig(FabricLoader.getInstance().getConfigDir(), "player-data.yml");
+        YamlConfig data = new YamlConfig(CobbleChallengeMod.defaultDataFolder(), "player-data.yml");
 
         for (String strUUID : data.getKeys("", false)) {
             UUID uuid = UUID.fromString(strUUID);
@@ -72,7 +72,7 @@ public class CobbleChallengeAPI implements SimpleAPI {
 
     }
 
-    public void saveProfiles() {
+    public synchronized void saveProfiles() {
         YamlConfig data = new YamlConfig(CobbleChallengeMod.defaultDataFolder(), "player-data.yml");
         data.clear();
 
