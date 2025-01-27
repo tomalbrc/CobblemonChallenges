@@ -82,7 +82,8 @@ public class EXPGainedRequirement implements Requirement {
         public void progress(Object obj) {
             if (matchesMethod(obj)) {
                 if (meetsCriteria(getType().cast(obj))) {
-                    progressAmount++;
+                    ExperienceGainedPostEvent event = getType().cast(obj);
+                    progressAmount += event.getExperience();
                 }
             }
         }
