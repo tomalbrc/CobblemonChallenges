@@ -25,10 +25,10 @@ public class Challenge {
 
     private boolean needsSelection; // does it need to be selected for a player to make progress?
     private long maxTimeInMilliseconds; // how long does the player have to complete this? -1 for infinite time
-
+    private long repeatableEveryMilliseconds = -1; // how often this challenge can be completed. -1 for only once
 
     public Challenge(String name, List<Reward> rewards, List<Requirement> requirements, ItemConfig displayItem,
-                     boolean needsSelection, long maxTimeInMilliseconds, String description) {
+                     boolean needsSelection, long maxTimeInMilliseconds, String description, long repeatableEveryMilliseconds) {
         this.name = name;
         this.rewards = rewards;
         this.requirements = requirements;
@@ -36,6 +36,7 @@ public class Challenge {
         this.needsSelection = needsSelection;
         this.maxTimeInMilliseconds = maxTimeInMilliseconds;
         this.description = description;
+        this.repeatableEveryMilliseconds = repeatableEveryMilliseconds;
     }
 
     public static @Nullable Challenge load(String challengeID, YamlConfig section) {
@@ -43,6 +44,7 @@ public class Challenge {
         boolean needsSelection = section.get("needs-selection", false);
         long timeToComplete = StringUtils.stringToMilliseconds(section.get("time-limit", "-1"));
         ItemConfig displayItem = new ItemConfig(section.getSection("display-item"));
+        long repeatableEveryMilliseconds = StringUtils.stringToMilliseconds(section.get("repeatable", "-1"));
         List<Requirement> requirementList = new ArrayList<>();
         List<Reward> rewards = new ArrayList<>();
 
@@ -68,7 +70,15 @@ public class Challenge {
 
         String description = StringUtils.collapseWithNextLines(section.getStringList("description"));
 
-        return new Challenge(challengeID, rewards, requirementList, displayItem, needsSelection, timeToComplete, description);
+        return new Challenge(challengeID, rewards, requirementList, displayItem, needsSelection, timeToComplete, description, repeatableEveryMilliseconds);
+    }
+
+    public long getRepeatableEveryMilliseconds() {
+        return repeatableEveryMilliseconds;
+    }
+
+    public boolean isRepeatable() {
+        return repeatableEveryMilliseconds != -1;
     }
 
     public String getName() {

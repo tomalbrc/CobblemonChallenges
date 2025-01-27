@@ -40,18 +40,6 @@ public class ChallengeItem implements ItemProvider {
                     "{tracking-tag}", null
             };
 
-            // insert correct progress tag
-            if (profile.isChallengeCompleted(challenge.getName())) {
-                replacements[1] = api.getMessage("challenges.progression_status.post-completion").getText();
-            }
-            else if (profile.isChallengeInProgress(challenge.getName())) {
-                String progressLines = profile.getActiveChallengeProgress(challenge.getName()).getProgressListAsString();
-                replacements[1] = api.getMessage("challenges.progression_status.during-attempt").getText() + "\n" + progressLines;
-            }
-            else {
-                replacements[1] = api.getMessage("challenges.progression_status.before-attempt").getText();
-            }
-
             // insert correct tracking tag
             if(challenge.doesNeedSelection()) {
                 if (profile.isChallengeInProgress(challenge.getName())) {
@@ -64,6 +52,24 @@ public class ChallengeItem implements ItemProvider {
                     replacements[5] = api.getMessage("challenges.tracking-tag.before-starting", "{time-remaining}",
                             StringUtils.formatSecondsToString(timeRemaining / 1000)).getText();
                 }
+            }
+
+            // insert correct progress tag
+            if (profile.isChallengeCompleted(challenge.getName())) {
+                replacements[1] = api.getMessage("challenges.progression_status.post-completion").getText();
+                replacements[5] = ""; // remove tracking tag if completed
+            }
+            else if (profile.isChallengeInProgress(challenge.getName())) {
+                String progressLines = profile.getActiveChallengeProgress(challenge.getName()).getProgressListAsString();
+                replacements[1] = api.getMessage("challenges.progression_status.during-attempt").getText() + "\n" + progressLines;
+            }
+            else {
+                replacements[1] = api.getMessage("challenges.progression_status.before-attempt").getText();
+            }
+
+            // remove tracking tag if no timer needed
+            if(!challenge.doesNeedSelection()) {
+                replacements[5] = "";
             }
 
             for (int i = 0; i < replacements.length; i += 2) {

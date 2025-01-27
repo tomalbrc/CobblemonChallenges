@@ -3,73 +3,70 @@ package com.github.kuramastone.cobblemonChallenges.challenges.requirements;
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
 import com.github.kuramastone.bUtilities.yaml.YamlKey;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
-import com.github.kuramastone.cobblemonChallenges.events.Played30SecondsEvent;
+import com.github.kuramastone.cobblemonChallenges.events.PlayerJoinEvent;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 
 import java.util.UUID;
 
-public class MilestoneTimePlayedRequirement implements Requirement {
+public class LoginRequirement implements Requirement {
+    public static final String ID = "login";
 
-    public static final String ID = "milestone_time_played";
+    @YamlKey("amount")
+    private int amount = 1;
 
-    @YamlKey("total-seconds")
-    private int totalTime = 1;
-
-    public MilestoneTimePlayedRequirement() {
+    public LoginRequirement() {
     }
 
+    public Requirement load(YamlConfig section) {
+        return YamlConfig.loadFromYaml(this, section);
+    }
+
+    // The requirement name now returns the ID used to recognize it
     @Override
     public String getName() {
         return ID;
     }
 
     @Override
-    public Requirement load(YamlConfig section) {
-        return YamlConfig.loadFromYaml(this, section);
-    }
-
-    @Override
     public Progression<?> buildProgression(PlayerProfile profile) {
-        return new MilestoneTimePlayedProgression(profile, this);
+        return new CatchPokemonProgression(profile, this);
     }
 
-    // Progression class to track time played progress
-    public static class MilestoneTimePlayedProgression implements Progression<Played30SecondsEvent> {
+    // Static nested Progression class
+    public static class CatchPokemonProgression implements Progression<PlayerJoinEvent> {
 
         private PlayerProfile profile;
-        private MilestoneTimePlayedRequirement requirement;
+        private LoginRequirement requirement;
         private int progressAmount;
 
-        public MilestoneTimePlayedProgression(PlayerProfile profile, MilestoneTimePlayedRequirement requirement) {
+        public CatchPokemonProgression(PlayerProfile profile, LoginRequirement requirement) {
             this.profile = profile;
             this.requirement = requirement;
             this.progressAmount = 0;
         }
 
         @Override
-        public Class<Played30SecondsEvent> getType() {
-            return Played30SecondsEvent.class;
-        }
-
-        @Override
-        public boolean meetsCriteria(Played30SecondsEvent event) {
-            // Each event fired counts for 30 seconds of playtime
-            return true;
+        public Class<PlayerJoinEvent> getType() {
+            return PlayerJoinEvent.class;
         }
 
         @Override
         public boolean isCompleted() {
-            return progressAmount >= requirement.totalTime;
+            return progressAmount >= requirement.amount;
         }
 
         @Override
         public void progress(Object obj) {
             if (matchesMethod(obj)) {
                 if (meetsCriteria(getType().cast(obj))) {
-                    progressAmount += 30;
-                    progressAmount = Math.min(progressAmount, this.requirement.totalTime);
+                    progressAmount++;
                 }
             }
+        }
+
+        @Override
+        public boolean meetsCriteria(PlayerJoinEvent event) {
+            return true;
         }
 
         @Override
@@ -79,8 +76,9 @@ public class MilestoneTimePlayedRequirement implements Requirement {
 
         @Override
         public double getPercentageComplete() {
-            return (double) progressAmount / requirement.totalTime;
+            return (double) progressAmount / requirement.amount;
         }
+
 
         @Override
         public Progression loadFrom(UUID uuid, YamlConfig configurationSection) {
@@ -97,7 +95,7 @@ public class MilestoneTimePlayedRequirement implements Requirement {
         public String getProgressString() {
             return CobbleChallengeMod.instance.getAPI().getMessage("challenges.progression-string",
                     "{current}", String.valueOf(this.progressAmount),
-                    "{target}", String.valueOf(this.requirement.totalTime)).getText();
+                    "{target}", String.valueOf(this.requirement.amount)).getText();
         }
     }
 }

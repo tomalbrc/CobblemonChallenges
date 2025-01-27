@@ -3,12 +3,10 @@ package com.github.kuramastone.cobblemonChallenges;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.github.kuramastone.cobblemonChallenges.commands.CommandHandler;
-import com.github.kuramastone.cobblemonChallenges.events.BlockBreakEvent;
-import com.github.kuramastone.cobblemonChallenges.events.BlockPlaceEvent;
-import com.github.kuramastone.cobblemonChallenges.events.PlayTimeScheduler;
-import com.github.kuramastone.cobblemonChallenges.events.Played30SecondsEvent;
+import com.github.kuramastone.cobblemonChallenges.events.*;
 import com.github.kuramastone.cobblemonChallenges.listeners.ChallengeListener;
 import com.github.kuramastone.cobblemonChallenges.listeners.TickScheduler;
+import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -36,6 +34,7 @@ public class CobbleChallengeMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted); // capture minecraftserver
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> onStopped());
         startSaveScheduler();
+        startRepeatableScheduler();
         CommandHandler.register(); // register commands
         registerTrackedEvents();
     }
@@ -53,6 +52,17 @@ public class CobbleChallengeMod implements ModInitializer {
         });
     }
 
+    private void startRepeatableScheduler() {
+        TickScheduler.scheduleRepeating(20, ()-> {
+
+            for (PlayerProfile profile : api.getProfiles()) {
+                profile.refreshRepeatableChallenges();
+            }
+
+            return true;
+        });
+    }
+
     private void onStopped() {
         api.saveProfiles();
     }
@@ -63,6 +73,7 @@ public class CobbleChallengeMod implements ModInitializer {
         ChallengeListener.register();
         BlockBreakEvent.register();
         BlockPlaceEvent.register();
+        PlayerJoinEvent.register();
         ServerTickEvents.START_SERVER_TICK.register(PlayTimeScheduler::onServerTick);
         CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.HIGHEST, ChallengeListener::onPokemonCaptured);
         CobblemonEvents.POKEMON_SCANNED.subscribe(Priority.HIGHEST, ChallengeListener::onPokemonPokedexScanned);

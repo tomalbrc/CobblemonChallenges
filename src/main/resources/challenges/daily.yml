@@ -43,6 +43,42 @@ challenge-list:
 
   # The list of challenges.
   challenges:
+    "Login Daily":
+      repeatable: 23h30m # A bit less than 24 hours
+      # If set to false, this challenge does not need to be clicked in order to be started.
+      needs-selection: false
+      # This is used inside the item's lore and in the message sent when a challenge is completed
+      description:
+        - "&7Login daily and receive these rewards!"
+        - " "
+        - "    &dRewards:"
+        - "    &d- &7+2500$"
+        - "    &d- &716 Ultra Balls"
+      # This is the itemstack that displays in the gui
+      display-item:
+        # supports modded items and vanilla items. for modded items, include their initial tag such as "cobblemon:master_ball"
+        material: clock
+        name: "&e&lLogin Daily"
+        # {progression_status} can be customized in config.yml under Messages
+        # {description} is the same as shown above
+        # {tracking-tag} is the countdown timer before a challenge has expired and must be restarted.
+        lore:
+          - "{progression_status}"
+          - " "
+          - "{description}"
+      # Each challenge can have multiple challenges. List each one under a different number which is used to sort them, so their exact value doesnt actually matter.
+      # See config.yml for more information about each challenge requirement.
+      requirements:
+        1:
+          login:
+            amount: 1
+      # These commands will be sent when all requirements have been completed.
+      # {player} will be replaced with their username.
+      rewards:
+        commands:
+          - "eco give {player} 69.420"
+
+
     "Catching Challenge":
       # If set to false, this challenge does not need to be clicked in order to be started.
       needs-selection: true

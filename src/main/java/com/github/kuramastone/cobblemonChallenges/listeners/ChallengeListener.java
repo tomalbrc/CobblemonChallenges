@@ -10,13 +10,11 @@ import com.cobblemon.mod.common.api.events.pokemon.evolution.EvolutionCompleteEv
 import com.cobblemon.mod.common.api.events.pokemon.interaction.ExperienceCandyUseEvent;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeAPI;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
-import com.github.kuramastone.cobblemonChallenges.events.BlockBreakEvent;
-import com.github.kuramastone.cobblemonChallenges.events.BlockPlaceEvent;
-import com.github.kuramastone.cobblemonChallenges.events.ChallengeCompletedEvent;
-import com.github.kuramastone.cobblemonChallenges.events.Played30SecondsEvent;
+import com.github.kuramastone.cobblemonChallenges.events.*;
 import com.github.kuramastone.cobblemonChallenges.player.ChallengeProgress;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import kotlin.Unit;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
@@ -119,11 +117,17 @@ public class ChallengeListener {
 
     public static Unit onTradeCompleted(TradeCompletedEvent event) {
         passEvent(event, event.getTradeParticipant1().getUuid());
+        passEvent(event, event.getTradeParticipant2().getUuid());
         return null;
     }
 
     public static Unit onFossilRevived(FossilRevivedEvent event) {
         passEvent(event, event.getPlayer());
         return null;
+    }
+
+    public static void onPlayerJoin(PlayerJoinEvent event) {
+        // delay this to allow player to fully join before triggering
+        TickScheduler.scheduleLater(20L, () -> passEvent(event, event.getPlayer()));
     }
 }

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.kuramastone"
-version = "1.0.4"
+version = "1.0.5"
 
 architectury {
     platformSetupLoomIde()
@@ -24,7 +24,7 @@ loom {
 repositories {
     mavenCentral()
     mavenLocal()
-    maven("https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
+    maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
     maven("https://maven.impactdev.net/repository/development/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://maven.fabricmc.net/")
@@ -60,8 +60,8 @@ dependencies {
     includeAndImplement("net.kyori:adventure-key:4.17.0")
     includeAndImplement("net.kyori:adventure-text-serializer-plain:4.14.0")
 
-    //modImplementation("com.cobblemon:fabric:1.6.0+1.21-SNAPSHOT")
-    modImplementation(files("libs/Cobblemon-fabric-1.6.0+1.21.1-main-7ae20cc.jar"))
+    modImplementation("com.cobblemon:fabric:1.6.1+1.21.1-SNAPSHOT")
+
 
     compileOnly("net.luckperms:api:5.4")
 }

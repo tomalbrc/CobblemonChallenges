@@ -80,10 +80,10 @@ public class CommandHandler {
 
             ChallengeMenuGUI gui = new ChallengeMenuGUI(api, api.getOrCreateProfile(player.getUUID()));
             gui.open();
-            player.displayClientMessage(FabricAdapter.adapt(api.getMessage("commands.opening-base-gui")), false);
+            if (!player.hasContainerOpen())
+                player.displayClientMessage(FabricAdapter.adapt(api.getMessage("commands.opening-base-gui")), false);
             return 1;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -111,8 +111,7 @@ public class CommandHandler {
 
             new ChallengeListGUI(api, api.getOrCreateProfile(player.getUUID()), challengeList, api.getConfigOptions().getChallengeGuiConfig(challengeList.getName())).open();
             return 1;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

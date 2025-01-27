@@ -52,7 +52,7 @@ public class ChallengeProgress {
         if (activeChallenge == null) {
             return;
         }
-        profile.completeChallenge(activeChallenge);
+        profile.completeChallenge(parentList, activeChallenge);
         profile.removeActiveChallenge(this);
 
         ChallengeListener.onChallengeCompleted(new ChallengeCompletedEvent(profile, parentList, activeChallenge));

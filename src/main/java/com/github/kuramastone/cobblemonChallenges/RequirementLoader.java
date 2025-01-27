@@ -34,6 +34,8 @@ public class RequirementLoader {
         register(IncreaseLevelRequirement.class);
         register(TradeCompletedRequirement.class);
         register(FossilRevivedRequirement.class);
+
+        register(LoginRequirement.class);
     }
 
     public static void register(Class<? extends Requirement> clazz) {

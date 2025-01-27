@@ -46,7 +46,7 @@ public class ChallengeListGUI {
         return () -> {
             if (!profile.isChallengeCompleted(challenge.getName()) && challenge.doesNeedSelection()) {
                 profile.addActiveChallenge(challengeList, challenge);
-                profile.checkCompletion(challengeList, challenge);
+                profile.checkCompletion(challengeList);
                 window.notifyAllItems();
             }
         };

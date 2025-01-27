@@ -71,7 +71,7 @@ public class PokemonScannedRequirement implements Requirement {
         @Override
         public boolean meetsCriteria(PokemonScannedEvent event) {
 
-            if (!StringUtils.doesStringContainCategory(event.getPokedexEntityData().getSpecies().getName(), requirement.pokename)) {
+            if (!StringUtils.doesStringContainCategory(event.getScannedPokemonEntityData().getPokemon().getSpecies().getName(), requirement.pokename)) {
                 return false;
             }
 
