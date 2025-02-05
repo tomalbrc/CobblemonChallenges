@@ -14,16 +14,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.Nullable;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemUtils {
 
-    public static ItemStack createItemStack(String material, int amount, @Nullable Component name, @Nullable List<Component> lore, @Nullable Map<String, Integer> enchants) {
+    public static ItemStack createItemStack(String material, int amount, @Nullable Component name, @Nullable List<Component> lore, @Nullable Map<String, Integer> enchants, int customModelData) {
 
         // Validate and retrieve the material from the item registry
         String materialName = material.toLowerCase();
@@ -37,6 +39,10 @@ public class ItemUtils {
 
         if (name != null)
             itemStack.set(DataComponents.CUSTOM_NAME, name);
+
+        if (customModelData != 0) {
+            itemStack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(customModelData));
+        }
 
         // Set lore if provided
         if (lore != null) {
@@ -70,7 +76,8 @@ public class ItemUtils {
                         .map(str -> ComponentEditor.decorateComponent("&r" + str))
                         .map(FabricAdapter::adapt)
                         .map(mu -> (Component) mu).collect(Collectors.toUnmodifiableList()),
-                config.getEnchants());
+                config.getEnchants(),
+                config.getCustommodeldata());
     }
 
     public static void setLore(ItemStack item, List<String> lore) {
@@ -89,9 +96,13 @@ public class ItemUtils {
             enchants.put(enchant, level);
         }
 
+        int cmd = 0;
+        if (itemstack.has(DataComponents.CUSTOM_MODEL_DATA))
+            cmd = itemstack.get(DataComponents.CUSTOM_MODEL_DATA).value();
+
         return createItemStack(BuiltInRegistries.ITEM.getKey(item).toString(), itemstack.getCount(), itemstack.get(DataComponents.CUSTOM_NAME),
                 itemstack.get(DataComponents.LORE) == null ? null : itemstack.get(DataComponents.LORE).lines(),
-                enchants);
+                enchants, cmd);
     }
 
 }
