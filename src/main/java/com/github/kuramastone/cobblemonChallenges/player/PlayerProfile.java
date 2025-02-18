@@ -146,8 +146,10 @@ public class PlayerProfile {
 
     public void completeChallenge(ChallengeList list, Challenge challenge) {
         //double check that it isnt already completed
-        if (!isChallengeCompleted(challenge.getName()))
-            rewardsToGive.addAll(challenge.getRewards());
+        if (isChallengeCompleted(challenge.getName()))
+            return;
+
+        rewardsToGive.addAll(challenge.getRewards());
 
         dispenseRewards();
         List<String> linesToSend = List.of(StringUtils.splitByLineBreak(api.getMessage("challenges.completed", "{challenge}", challenge.getName(), "{challenge-description}", challenge.getDescription()).getText()));
@@ -169,8 +171,7 @@ public class PlayerProfile {
                 try {
                     if (reward != null)
                         reward.applyTo(playerEntity);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -207,7 +208,7 @@ public class PlayerProfile {
 
     public boolean isChallengeCompleted(String challengeID) {
         for (CompletedChallenge completedChallenge : this.completedChallenges) {
-            if(completedChallenge.challengeID().equalsIgnoreCase(challengeID)) {
+            if (completedChallenge.challengeID().equalsIgnoreCase(challengeID)) {
                 return true;
             }
         }
@@ -252,12 +253,12 @@ public class PlayerProfile {
     public void refreshRepeatableChallenges() {
         for (CompletedChallenge data : new ArrayList<>(completedChallenges)) {
             ChallengeList challengeList = api.getChallengeList(data.challengeListID());
-            if(challengeList != null) {
+            if (challengeList != null) {
                 Challenge challenge = challengeList.getChallenge(data.challengeID());
-                if(challenge != null) {
-                    if(challenge.isRepeatable()) {
+                if (challenge != null) {
+                    if (challenge.isRepeatable()) {
                         long timeSinceCompleted = System.currentTimeMillis() - data.timeCompleted();
-                        if(timeSinceCompleted >= challenge.getRepeatableEveryMilliseconds()) {
+                        if (timeSinceCompleted >= challenge.getRepeatableEveryMilliseconds()) {
                             completedChallenges.remove(data);
                         }
                     }
