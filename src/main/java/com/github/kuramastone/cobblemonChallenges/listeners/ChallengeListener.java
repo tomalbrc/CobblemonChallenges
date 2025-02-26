@@ -37,7 +37,12 @@ public class ChallengeListener {
     }
 
     public static void passEvent(Object event, Player player) {
-        passEvent(event, player.getUUID());
+        try {
+            passEvent(event, player.getUUID());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void onBlockBreak(BlockBreakEvent event) {
@@ -122,6 +127,8 @@ public class ChallengeListener {
     }
 
     public static Unit onFossilRevived(FossilRevivedEvent event) {
+        if(event.getPlayer() == null)
+            return null;
         passEvent(event, event.getPlayer());
         return null;
     }
