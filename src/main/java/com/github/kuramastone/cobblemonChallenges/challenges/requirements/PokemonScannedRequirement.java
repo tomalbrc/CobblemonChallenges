@@ -9,6 +9,7 @@ import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
 
+import java.io.EOFException;
 import java.util.UUID;
 
 public class PokemonScannedRequirement implements Requirement {
@@ -38,10 +39,17 @@ public class PokemonScannedRequirement implements Requirement {
         /*
         Do not ask the player to scan more pokemon than possible
          */
+
         CompletePokedexEntriesProgression ccp = new CompletePokedexEntriesProgression(profile, this);
-        int currentAmount = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(profile.getUUID()).getSpeciesRecords().size(); // 99
-        int maxPokedexEntries = PokemonSpecies.INSTANCE.count(); // 100
-        int maxPossibleToGain = Math.max(0, maxPokedexEntries - currentAmount); // 1
+        int maxPossibleToGain = this.amount;
+        try {
+            int currentAmount = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(profile.getUUID()).getSpeciesRecords().size(); // 99
+            int maxPokedexEntries = PokemonSpecies.INSTANCE.count(); // 100
+            maxPossibleToGain = Math.max(0, maxPokedexEntries - currentAmount); // 1
+        } catch (Exception e) {
+            CobbleChallengeMod.logger.error("Unable to read cobblemon nbt data for player '{}' for the PokemonScannedRequirement. Ignoring their data. Is it corrupted? Error type is: '{}'",
+                    profile.getUUID(), e.getClass().getSimpleName());
+        }
 
         // cant ask them to gain more than the max
         if (this.amount > maxPossibleToGain)

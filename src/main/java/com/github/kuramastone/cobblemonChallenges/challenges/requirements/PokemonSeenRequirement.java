@@ -38,10 +38,17 @@ public class PokemonSeenRequirement implements Requirement {
         /*
         Do not ask the player to see more unique pokemon than possible
          */
+
         PokemonSeenProgression ccp = new PokemonSeenProgression(profile, this);
-        int currentAmount = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(profile.getUUID()).getSpeciesRecords().size(); // 99
-        int maxPokedexEntries = PokemonSpecies.INSTANCE.count(); // 100
-        int maxPossibleToGain = Math.max(0, maxPokedexEntries - currentAmount); // 1
+        int maxPossibleToGain = this.amount;
+        try {
+            int currentAmount = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(profile.getUUID()).getSpeciesRecords().size(); // 99
+            int maxPokedexEntries = PokemonSpecies.INSTANCE.count(); // 100
+            maxPossibleToGain = Math.max(0, maxPokedexEntries - currentAmount); // 1
+        } catch (Exception e) {
+            CobbleChallengeMod.logger.error("Unable to read cobblemon nbt data for player '{}' for the PokemonSeenRequirement. Ignoring their data. Is it corrupted? Error type is: '{}'",
+                    profile.getUUID(), e.getClass().getSimpleName());
+        }
 
         // cant ask them to gain more than the max
         if (this.amount > maxPossibleToGain)
@@ -76,7 +83,7 @@ public class PokemonSeenRequirement implements Requirement {
             }
 
             boolean hasSeenBefore = Cobblemon.INSTANCE.getPlayerDataManager().getPokedexData(event.getPlayerId()).getSpeciesRecords().containsKey(event.getPokemon().getSpecies().resourceIdentifier);
-            if(hasSeenBefore) {
+            if (hasSeenBefore) {
                 return false;
             }
 
