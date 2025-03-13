@@ -7,6 +7,7 @@ import com.github.kuramastone.cobblemonChallenges.challenges.requirements.Progre
 import com.github.kuramastone.cobblemonChallenges.challenges.requirements.Requirement;
 import com.github.kuramastone.cobblemonChallenges.player.ChallengeProgress;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class ChallengeList {
                 challengeList.add(challenge);
             }
             else {
-                CobbleChallengeMod.logger.error(String.format("Unable to load duplicate Challenge name '%s'. Try renaming it! Ignoring this challenge.", challengeID));
+                CobbleChallengeMod.logger.error("Unable to load duplicate Challenge name '{}'. Try renaming it! Ignoring this challenge.", challengeID);
             }
         }
         int maxChallengesPerPlayer = section.get("maxChallengesPerPlayer", 1);
@@ -70,9 +71,9 @@ public class ChallengeList {
      */
     public ChallengeProgress buildNewProgressForQuest(Challenge challenge, PlayerProfile profile) {
 
-        Map<String, Progression<?>> progs = new HashMap<>();
+        List<Pair<String, Progression<?>>> progs = new ArrayList<>();
         for (Requirement requirement : challenge.getRequirements()) {
-            progs.put(requirement.getName(), requirement.buildProgression(profile));
+            progs.add(Pair.of(requirement.getName(), requirement.buildProgression(profile)));
         }
 
         return new ChallengeProgress(api, profile, this, challenge, progs, System.currentTimeMillis());

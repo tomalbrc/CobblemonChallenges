@@ -14,7 +14,7 @@ public class MineBlockRequirement implements Requirement {
     public static final String ID = "Mine_Block";
 
     @YamlKey("type")
-    private String blockType = "any";
+    public String blockType = "any";
     @YamlKey("amount")
     private int amount = 1;
 
@@ -40,7 +40,7 @@ public class MineBlockRequirement implements Requirement {
     public static class MineBlockProgression implements Progression<BlockBreakEvent> {
 
         private PlayerProfile profile;
-        private MineBlockRequirement requirement;
+        public final MineBlockRequirement requirement;
         private int progressAmount;
 
         public MineBlockProgression(PlayerProfile profile, MineBlockRequirement requirement) {

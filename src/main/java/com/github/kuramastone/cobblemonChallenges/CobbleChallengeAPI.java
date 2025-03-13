@@ -11,6 +11,7 @@ import com.github.kuramastone.cobblemonChallenges.player.ChallengeProgress;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.ConfigOptions;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.util.*;
@@ -77,7 +78,7 @@ public class CobbleChallengeAPI implements SimpleAPI {
 
                             // iterate over each requirement for challenge
                             int index = 0;
-                            for (Map.Entry<String, Progression<?>> progSet : progress.getProgressionMap().entrySet()) {
+                            for (Pair<String, Progression<?>> progSet : progress.getProgressionMap()) {
                                 YamlConfig progSection = challengeSection.getSection(index++ + "." + progSet.getKey());
                                 progSet.getValue().loadFrom(uuid, progSection);
                             }
@@ -110,7 +111,7 @@ public class CobbleChallengeAPI implements SimpleAPI {
             for (Map.Entry<String, List<ChallengeProgress>> set : profile.getActiveChallengesMap().entrySet()) {
                 for (ChallengeProgress cp : set.getValue()) {
                     int index = 0;
-                    for (Map.Entry<String, Progression<?>> progSet : cp.getProgressionMap().entrySet()) {
+                    for (Pair<String, Progression<?>> progSet : cp.getProgressionMap()) {
                         YamlConfig progSection = profileEntry.getOrCreateSection("progression.%s.%s.%s.%s".formatted(set.getKey(), cp.getActiveChallenge().getName(), index++, progSet.getKey()));
                         progSet.getValue().writeTo(progSection);
                     }
@@ -151,7 +152,7 @@ public class CobbleChallengeAPI implements SimpleAPI {
             }
 
             if (challengeListMap.containsKey(name)) {
-                CobbleChallengeMod.logger.error(String.format("Unable to load duplicate ChallengeList '%s'. Try giving it a unique name.", name));
+                CobbleChallengeMod.logger.error("Unable to load duplicate ChallengeList '{}'. Try giving it a unique name.", name);
                 continue;
             }
 

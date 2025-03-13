@@ -5,10 +5,14 @@ import com.github.kuramastone.cobblemonChallenges.CobbleChallengeAPI;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.challenges.Challenge;
 import com.github.kuramastone.cobblemonChallenges.gui.ItemProvider;
+import com.github.kuramastone.cobblemonChallenges.gui.SimpleWindow;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.FabricAdapter;
 import com.github.kuramastone.cobblemonChallenges.utils.ItemUtils;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -16,11 +20,13 @@ import java.util.List;
 
 public class ChallengeItem implements ItemProvider {
 
+    private SimpleWindow window;
     private CobbleChallengeAPI api;
     private PlayerProfile profile;
     private Challenge challenge;
 
-    public ChallengeItem(PlayerProfile profile, Challenge challenge) {
+    public ChallengeItem(SimpleWindow window, PlayerProfile profile, Challenge challenge) {
+        this.window = window;
         this.profile = profile;
         this.challenge = challenge;
         api = CobbleChallengeMod.instance.getAPI();
@@ -93,11 +99,13 @@ public class ChallengeItem implements ItemProvider {
             item = ItemUtils.setItem(item, api.getConfigOptions().getActiveChallengeItem().getItem());
         }
 
+        item.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+
         return item;
     }
 
     @Override
     public ItemProvider copy() {
-        return new ChallengeItem(profile, challenge);
+        return new ChallengeItem(window, profile, challenge);
     }
 }

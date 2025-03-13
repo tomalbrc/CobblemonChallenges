@@ -14,7 +14,7 @@ public class PlaceBlockRequirement implements Requirement {
     public static final String ID = "Place_Block";
 
     @YamlKey("type")
-    private String blockType = "any";
+    public String blockType = "any";
     @YamlKey("amount")
     private int amount = 1;
 
@@ -33,17 +33,17 @@ public class PlaceBlockRequirement implements Requirement {
 
     @Override
     public Progression<?> buildProgression(PlayerProfile profile) {
-        return new MineBlockProgression(profile, this);
+        return new PlaceBlockProgression(profile, this);
     }
 
     // Static nested Progression class
-    public static class MineBlockProgression implements Progression<BlockPlaceEvent> {
+    public static class PlaceBlockProgression implements Progression<BlockPlaceEvent> {
 
         private PlayerProfile profile;
-        private PlaceBlockRequirement requirement;
+        public PlaceBlockRequirement requirement;
         private int progressAmount;
 
-        public MineBlockProgression(PlayerProfile profile, PlaceBlockRequirement requirement) {
+        public PlaceBlockProgression(PlayerProfile profile, PlaceBlockRequirement requirement) {
             this.profile = profile;
             this.requirement = requirement;
             this.progressAmount = 0;

@@ -134,6 +134,6 @@ public class ChallengeListener {
 
     public static void onPlayerJoin(PlayerJoinEvent event) {
         // delay this to allow player to fully join before triggering
-        TickScheduler.scheduleLater(20L, () -> passEvent(event, event.getPlayer()));
+        TickScheduler.scheduleLater(60L, () -> passEvent(event, event.getPlayer()));
     }
 }

@@ -85,7 +85,11 @@ public class ItemUtils {
         for (String loreLine : lore) {
             loreText.add(FabricAdapter.adapt(ComponentEditor.decorateComponent("&r" + loreLine)));
         }
-        item.set(DataComponents.LORE, new ItemLore(loreText));
+        setLoreComponents(item, loreText);
+    }
+
+    public static void setLoreComponents(ItemStack item, List<Component> lore) {
+        item.set(DataComponents.LORE, new ItemLore(lore));
     }
 
     public static ItemStack setItem(ItemStack itemstack, Item item) {

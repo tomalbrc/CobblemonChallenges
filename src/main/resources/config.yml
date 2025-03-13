@@ -1,4 +1,4 @@
-config-version: 1.0.0
+config-version: 1
 
 # These are customizable messages that appear in chat and sometimes inside of guis.
 Messages:
@@ -6,7 +6,8 @@ Messages:
   issues:
     unknown_challenge_list: "{prefix} &cUnknown challenge &e{challenge_list}&c."
   progression:
-    progression-entry: "{requirement-title}: {progression-string}"
+    # If the challenge is not a "mined_block" challenge, it will default to an empty string.
+    progression-entry: "{block_data?}{requirement-title}: {progression-string}"
   commands:
     opening-base-gui: "{prefix} &7Complete and claim rewards from challenges here!"
     reload: "{prefix} &2Messages and guis have been reloaded!"

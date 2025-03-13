@@ -33,8 +33,9 @@ public class ChallengeListGUI {
 
         //window is already built aesthetically, but now we need to insert each challenge
         for (Challenge challenge : challengeList.getChallengeMap()) {
-            WindowItem item = new WindowItem(window, new ChallengeItem(profile, challenge));
-            item.setAutoUpdate(20, () -> profile.isChallengeInProgress(challenge.getName()));
+            WindowItem item = new WindowItem(window, new ChallengeItem(window, profile, challenge));
+            if (challenge.doesNeedSelection() && profile.isChallengeInProgress(challenge.getName()))
+                item.setAutoUpdate(20, () -> profile.isChallengeInProgress(challenge.getName()));
             item.setRunnableOnClick(onChallengeClick(challenge, item));
             contents.add(item);
         }
@@ -47,7 +48,8 @@ public class ChallengeListGUI {
             if (!profile.isChallengeCompleted(challenge.getName()) && challenge.doesNeedSelection()) {
                 profile.addActiveChallenge(challengeList, challenge);
                 profile.checkCompletion(challengeList);
-                window.notifyAllItems();
+                item.setAutoUpdate(20, () -> true); // set to auto update to allow timer to keep updating
+                item.notifyWindow();
             }
         };
     }

@@ -9,11 +9,9 @@ import java.util.Map;
 public class RequirementLoader {
 
     private static Map<String, Class<? extends Requirement>> requirementMap;
-    private static Map<String, String> requirementTitles;
 
     public static void init() {
         requirementMap = new HashMap<>();
-        requirementTitles = new HashMap<>();
 
         register(CatchPokemonRequirement.class);
         register(CompleteChallengeRequirement.class);
@@ -42,10 +40,8 @@ public class RequirementLoader {
         try {
             String id = (String) clazz.getDeclaredField("ID").get(null);
             id = id.toLowerCase();
-            String title = CobbleChallengeMod.instance.getAPI().getMessage("requirements.progression-shorthand.%s".formatted(id)).getText();
             //PixelChallengeMod.logger.info(String.format("Registering class '%s' under id '%s'.", clazz.getSimpleName(), id));
             requirementMap.put(id, clazz);
-            requirementTitles.put(id, title);
         }
         catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Cannot find 'public static final String ID' in this requirement. This is required in order to associate it in the config.", e);
@@ -71,7 +67,4 @@ public class RequirementLoader {
         }
     }
 
-    public static String getTitleByName(String key) {
-        return requirementTitles.get(key.toLowerCase());
-    }
 }
