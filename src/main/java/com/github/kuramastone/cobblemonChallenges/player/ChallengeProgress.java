@@ -133,7 +133,7 @@ public class ChallengeProgress {
                 blockData = getPrettyBlockTypeOfFirst(placeBlockProgression.requirement.blockType) + " ";
 
             sb.append(api.getMessage("progression.progression-entry",
-                    "block_data?", blockData,
+                    "{block_data?}", blockData,
                     "{requirement-title}", reqTitle,
                     "{progression-string}", set.getValue().getProgressString()).getText()
             ).append("\n");
@@ -146,6 +146,7 @@ public class ChallengeProgress {
     private String getPrettyBlockTypeOfFirst(String blockIdentifierGroup) {
         String[] blockIdentifierArray = blockIdentifierGroup.split("/");
         StringBuilder builder = new StringBuilder();
+        // only add first block to list
         for (int i = 0; i < blockIdentifierArray.length; i++) {
             String blockIdentifier = blockIdentifierArray[i];
 
@@ -161,5 +162,12 @@ public class ChallengeProgress {
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "ChallengeProgress{" +
+                "activeChallengeName=" + activeChallenge.getName() +
+                '}';
     }
 }

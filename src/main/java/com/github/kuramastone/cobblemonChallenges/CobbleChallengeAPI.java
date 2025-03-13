@@ -38,55 +38,66 @@ public class CobbleChallengeAPI implements SimpleAPI {
         YamlConfig data = new YamlConfig(CobbleChallengeMod.defaultDataFolder(), "player-data.yml");
 
         for (String strUUID : data.getKeys("", false)) {
-            UUID uuid = UUID.fromString(strUUID);
-            PlayerProfile profile = getOrCreateProfile(uuid);
+            try {
+                UUID uuid = UUID.fromString(strUUID);
+                PlayerProfile profile = getOrCreateProfile(uuid, false);
 
-            YamlConfig section = data.getSection(strUUID);
-            // legacy from when they were saved as a list
-            List<CompletedChallenge> completedChallenges = new ArrayList<>();
-            profile.setCompletedChallenges(completedChallenges);
+                YamlConfig section = data.getSection(strUUID);
+                // legacy from when they were saved as a list
+                List<CompletedChallenge> completedChallenges = new ArrayList<>();
+                profile.setCompletedChallenges(completedChallenges);
 
-            if (section.containsKey("completed-map")) {
-                YamlConfig completeSection = section.getSection("completed-map");
+                if (section.containsKey("completed-map")) {
+                    YamlConfig completeSection = section.getSection("completed-map");
 
-                // due to an old bug, it can sometimes be double layered
-                if(completeSection.containsKey("completed-map")) {
-                    completeSection = completeSection.getSection("completed-map");
+                    // due to an old bug, it can sometimes be double layered
+                    if (completeSection.containsKey("completed-map")) {
+                        completeSection = completeSection.getSection("completed-map");
+                    }
+
+                    for (String anyID : completeSection.getKeys("", false)) {
+                        String challengeListID = completeSection.getString("%s.challengeListID".formatted(anyID));
+                        String challengeID = completeSection.getString("%s.challengeID".formatted(anyID));
+                        long lastTimeCompleted = completeSection.getLong("%s.timeCompleted".formatted(anyID));
+                        completedChallenges.add(new CompletedChallenge(challengeListID, challengeID, lastTimeCompleted));
+                    }
                 }
+                if (section.containsKey("progression")) {
+                    YamlConfig progressionSection = section.getSection("progression");
+                    // iterate over each challenge list
+                    for (String strList : progressionSection.getKeys("", false)) {
+                        YamlConfig listSection = progressionSection.getSection(strList);
+                        ChallengeList list = getChallengeList(strList);
 
-                for (String anyID : completeSection.getKeys("", false)) {
-                    String challengeListID = completeSection.getString("%s.challengeListID".formatted(anyID));
-                    String challengeID = completeSection.getString("%s.challengeID".formatted(anyID));
-                    long lastTimeCompleted = completeSection.getLong("%s.timeCompleted".formatted(anyID));
-                    completedChallenges.add(new CompletedChallenge(challengeListID, challengeID, lastTimeCompleted));
-                }
-            }
-            if (section.containsKey("progression")) {
-                YamlConfig progressionSection = section.getSection("progression");
-                // iterate over each challenge list
-                for (String strList : progressionSection.getKeys("", false)) {
-                    YamlConfig listSection = progressionSection.getSection(strList);
-                    ChallengeList list = getChallengeList(strList);
+                        // iterate over each challenge
+                        for (String strChallenge : listSection.getKeys("", false)) {
+                            Challenge challenge = list.getChallenge(strChallenge);
+                            // removed challenges are no longer loaded, ignore null challenges
+                            if (challenge != null) {
+                                ChallengeProgress progress = list.buildNewProgressForQuest(challenge, profile);
+                                YamlConfig challengeSection = listSection.getSection(strChallenge);
 
-                    // iterate over each challenge
-                    for (String strChallenge : listSection.getKeys("", false)) {
-                        Challenge challenge = list.getChallenge(strChallenge);
-                        // removed challenges are no longer loaded, ignore null challenges
-                        if (challenge != null) {
-                            ChallengeProgress progress = list.buildNewProgressForQuest(challenge, profile);
-                            YamlConfig challengeSection = listSection.getSection(strChallenge);
+                                // iterate over each requirement for challenge
+                                int index = 0;
+                                for (Pair<String, Progression<?>> progSet : progress.getProgressionMap()) {
+                                    YamlConfig progSection = challengeSection.getSection(index++ + "." + progSet.getKey());
 
-                            // iterate over each requirement for challenge
-                            int index = 0;
-                            for (Pair<String, Progression<?>> progSet : progress.getProgressionMap()) {
-                                YamlConfig progSection = challengeSection.getSection(index++ + "." + progSet.getKey());
-                                progSet.getValue().loadFrom(uuid, progSection);
+                                    // if requirements change, this section may be null. ignore it.
+                                    if (progSection != null)
+                                        progSet.getValue().loadFrom(uuid, progSection);
+                                }
+
+                                profile.addActiveChallenge(progress);
                             }
-
-                            profile.addActiveChallenge(progress);
                         }
                     }
                 }
+
+                // only add unrestricted challenges after adding saved challenges
+                profile.addUnrestrictedChallenges();
+            } catch (Exception e) {
+                CobbleChallengeMod.logger.error("Failed to load cobblemonchallenges player profile: {}", strUUID);
+                e.printStackTrace();
             }
 
         }
@@ -98,24 +109,29 @@ public class CobbleChallengeAPI implements SimpleAPI {
         data.clear();
 
         for (PlayerProfile profile : getProfiles()) {
-            YamlConfig profileEntry = data.getOrCreateSection(profile.getUUID().toString());
+            try {
+                YamlConfig profileEntry = data.getOrCreateSection(profile.getUUID().toString());
 
-            YamlConfig completedSection = data.getOrCreateSection("%s.completed-map".formatted(profile.getUUID()));
-            for (CompletedChallenge completedChallenge : profile.getCompletedChallenges()) {
-                String challengeID = completedChallenge.challengeID();
-                completedSection.set("%s.challengeListID".formatted(challengeID), completedChallenge.challengeListID());
-                completedSection.set("%s.challengeID".formatted(challengeID), completedChallenge.challengeID());
-                completedSection.set("%s.timeCompleted".formatted(challengeID), completedChallenge.timeCompleted());
-            }
+                YamlConfig completedSection = data.getOrCreateSection("%s.completed-map".formatted(profile.getUUID()));
+                for (CompletedChallenge completedChallenge : profile.getCompletedChallenges()) {
+                    String challengeID = completedChallenge.challengeID();
+                    completedSection.set("%s.challengeListID".formatted(challengeID), completedChallenge.challengeListID());
+                    completedSection.set("%s.challengeID".formatted(challengeID), completedChallenge.challengeID());
+                    completedSection.set("%s.timeCompleted".formatted(challengeID), completedChallenge.timeCompleted());
+                }
 
-            for (Map.Entry<String, List<ChallengeProgress>> set : profile.getActiveChallengesMap().entrySet()) {
-                for (ChallengeProgress cp : set.getValue()) {
-                    int index = 0;
-                    for (Pair<String, Progression<?>> progSet : cp.getProgressionMap()) {
-                        YamlConfig progSection = profileEntry.getOrCreateSection("progression.%s.%s.%s.%s".formatted(set.getKey(), cp.getActiveChallenge().getName(), index++, progSet.getKey()));
-                        progSet.getValue().writeTo(progSection);
+                for (Map.Entry<String, List<ChallengeProgress>> set : profile.getActiveChallengesMap().entrySet()) {
+                    for (ChallengeProgress cp : set.getValue()) {
+                        int index = 0;
+                        for (Pair<String, Progression<?>> progSet : cp.getProgressionMap()) {
+                            YamlConfig progSection = profileEntry.getOrCreateSection("progression.%s.%s.%s.%s".formatted(set.getKey(), cp.getActiveChallenge().getName(), index++, progSet.getKey()));
+                            progSet.getValue().writeTo(progSection);
+                        }
                     }
                 }
+            } catch (Exception e) {
+                CobbleChallengeMod.logger.error("Error saving player profile: {}", profile.getUUID());
+                e.printStackTrace();
             }
         }
 
@@ -158,7 +174,7 @@ public class CobbleChallengeAPI implements SimpleAPI {
 
             ChallengeList cl = ChallengeList.load(this, name, config.getSection("challenge-list"));
             challengeListMap.put(name, cl);
-            CobbleChallengeMod.logger.info(String.format("Loading %s config with %s challenges...", name, cl.getChallengeMap().size()));
+            CobbleChallengeMod.logger.info("Loading {} config with {} challenges...", name, cl.getChallengeMap().size());
         }
     }
 
@@ -187,10 +203,15 @@ public class CobbleChallengeAPI implements SimpleAPI {
         return CobbleChallengeMod.instance;
     }
 
-    public PlayerProfile getOrCreateProfile(UUID uuid) {
+    public PlayerProfile getOrCreateProfile(UUID uuid, boolean addChallenges) {
         PlayerProfile pp = profileMap.computeIfAbsent(uuid, id -> new PlayerProfile(this, id));
-        pp.addUnrestrictedChallenges(); // add challenges that dont require selection
+        if (addChallenges)
+            pp.addUnrestrictedChallenges(); // add challenges that dont require selection
         return pp;
+    }
+
+    public PlayerProfile getOrCreateProfile(UUID uuid) {
+        return getOrCreateProfile(uuid, true);
     }
 
     @Override

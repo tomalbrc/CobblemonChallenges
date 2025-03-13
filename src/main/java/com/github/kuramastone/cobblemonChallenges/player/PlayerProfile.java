@@ -51,16 +51,6 @@ public class PlayerProfile {
         this.completedChallenges = completedChallenges;
     }
 
-    private ChallengeProgress getActiveChallengeFor(ChallengeList challengeList) {
-
-        if (this.activeChallenges.get(challengeList.getName()).isEmpty()) {
-            return null;
-        }
-
-        // TODO: Select challenge closest to completion
-        return this.activeChallenges.get(challengeList.getName()).get(0);
-    }
-
     public void syncPlayer() {
         playerEntity = server.getPlayerList().getPlayer(uuid);
     }
@@ -129,7 +119,9 @@ public class PlayerProfile {
 
     public void addActiveChallenge(ChallengeProgress cp) {
         List<ChallengeProgress> progressInList = this.activeChallenges.computeIfAbsent(cp.getParentList().getName(), (key) -> new ArrayList<>());
-        progressInList.add(cp);
+        // only add if they dont have it already
+        if (progressInList.stream().noneMatch(it -> it.getActiveChallenge().getName().equalsIgnoreCase(cp.getActiveChallenge().getName())))
+            progressInList.add(cp);
     }
 
     public ServerPlayer getPlayerEntity() {
