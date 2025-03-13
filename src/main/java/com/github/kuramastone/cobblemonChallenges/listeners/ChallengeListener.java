@@ -38,8 +38,7 @@ public class ChallengeListener {
     public static void passEvent(Object event, Player player) {
         try {
             passEvent(event, player.getUUID());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -110,12 +109,14 @@ public class ChallengeListener {
     }
 
     public static Unit onExpGained(ExperienceGainedPostEvent event) {
-        passEvent(event, event.getPokemon().getOwnerPlayer());
+        if (event.getPokemon().getOwnerPlayer() != null)
+            passEvent(event, event.getPokemon().getOwnerPlayer());
         return null;
     }
 
     public static Unit onLevelUp(LevelUpEvent event) {
-        passEvent(event, event.getPokemon().getOwnerPlayer());
+        if (event.getPokemon().getOwnerPlayer() != null)
+            passEvent(event, event.getPokemon().getOwnerPlayer());
         return null;
     }
 
@@ -126,7 +127,7 @@ public class ChallengeListener {
     }
 
     public static Unit onFossilRevived(FossilRevivedEvent event) {
-        if(event.getPlayer() == null)
+        if (event.getPlayer() == null)
             return null;
         passEvent(event, event.getPlayer());
         return null;
