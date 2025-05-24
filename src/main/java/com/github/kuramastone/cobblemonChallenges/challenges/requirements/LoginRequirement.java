@@ -29,17 +29,17 @@ public class LoginRequirement implements Requirement {
 
     @Override
     public Progression<?> buildProgression(PlayerProfile profile) {
-        return new CatchPokemonProgression(profile, this);
+        return new LoginProgression(profile, this);
     }
 
     // Static nested Progression class
-    public static class CatchPokemonProgression implements Progression<PlayerJoinEvent> {
+    public static class LoginProgression implements Progression<PlayerJoinEvent> {
 
         private PlayerProfile profile;
         private LoginRequirement requirement;
         private int progressAmount;
 
-        public CatchPokemonProgression(PlayerProfile profile, LoginRequirement requirement) {
+        public LoginProgression(PlayerProfile profile, LoginRequirement requirement) {
             this.profile = profile;
             this.requirement = requirement;
             this.progressAmount = 0;

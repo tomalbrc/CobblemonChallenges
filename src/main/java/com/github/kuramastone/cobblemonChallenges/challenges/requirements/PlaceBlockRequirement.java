@@ -74,7 +74,7 @@ public class PlaceBlockRequirement implements Requirement {
 
             String itemName = BuiltInRegistries.BLOCK.wrapAsHolder(event.getBlockState().getBlock()).getRegisteredName();
 
-            if (!StringUtils.doesStringContainCategory(itemName, requirement.blockType)) {
+            if (!StringUtils.doesStringContainCategory(requirement.blockType.split("/"), itemName)) {
                 return false;
             }
 

@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 
 public class StringUtils {
 
-    public static boolean doesStringContainCategory(String actual, String expected) {
+    public static boolean doesStringContainCategory(String[] searchList, String actual) {
         boolean doesStringContainCategory = false;
-        for (String enemyCategory : actual.split("/")) {
-            if (expected.toLowerCase().contains("any") ||
-                    expected.toLowerCase().contains(enemyCategory.toLowerCase())) {
+        for (String enemyCategory : searchList) {
+            if (enemyCategory.equalsIgnoreCase("any") ||
+                    enemyCategory.equalsIgnoreCase(actual)) {
                 doesStringContainCategory = true;
                 break;
             }

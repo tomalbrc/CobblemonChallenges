@@ -145,11 +145,12 @@ public class CobbleChallengeAPI implements SimpleAPI {
     }
 
     private void loadConfigOptions() {
-        YamlConfig config = new YamlConfig(CobbleChallengeMod.defaultDataFolder(), null, null, "config.yml", getClass());
-        configOptions = new ConfigOptions(config);
+        configOptions = new ConfigOptions();
+        configOptions.load();
     }
 
     private void loadChallenges() {
+
         File parentFolder = new File(CobbleChallengeMod.defaultDataFolder(), "challenges");
         if (parentFolder.listFiles() == null || parentFolder.listFiles().length == 0) {
             parentFolder.delete();
@@ -241,11 +242,10 @@ public class CobbleChallengeAPI implements SimpleAPI {
     }
 
     public void reloadConfig() {
+        saveProfiles();
         loadConfigOptions();
         loadChallenges();
-        for (PlayerProfile profile : getProfiles()) {
-            profile.addUnrestrictedChallenges();
-        }
+        loadProfiles();
     }
 
     public List<PlayerProfile> getProfiles() {

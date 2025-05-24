@@ -19,7 +19,7 @@ public class EvolvePokemonRequirement implements Requirement {
     public static final String ID = "Evolve_Pokemon";
 
     @YamlKey("pokename")
-    private String pokename = "any";
+    public String pokename = "any";
     @YamlKey("amount")
     private int amount = 1;
 
@@ -54,7 +54,7 @@ public class EvolvePokemonRequirement implements Requirement {
     public static class EvolvePokemonProgression implements Progression<EvolutionCompleteEvent> {
 
         private PlayerProfile profile;
-        private EvolvePokemonRequirement requirement;
+        public EvolvePokemonRequirement requirement;
         private int progressAmount;
 
         public EvolvePokemonProgression(PlayerProfile profile, EvolvePokemonRequirement requirement) {
@@ -100,8 +100,7 @@ public class EvolvePokemonRequirement implements Requirement {
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
 
-            if (!requirement.pokename.toLowerCase().startsWith("any") &&
-                    !requirement.pokename.toLowerCase().contains(pokename.toLowerCase())) {
+            if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                 return false;
             }
 

@@ -100,7 +100,7 @@ public class EXPGainedRequirement implements Requirement {
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
 
-            if (StringUtils.doesStringContainCategory(requirement.pokename, pokename)) {
+            if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                 return false;
             }
 

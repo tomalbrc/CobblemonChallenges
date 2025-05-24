@@ -19,7 +19,7 @@ public class CatchPokemonRequirement implements Requirement {
     public static final String ID = "Catch_Pokemon";
 
     @YamlKey("pokename")
-    private String pokename = "any";
+    public String pokename = "any";
     @YamlKey("amount")
     private int amount = 1;
 
@@ -58,7 +58,7 @@ public class CatchPokemonRequirement implements Requirement {
     public static class CatchPokemonProgression implements Progression<PokemonCapturedEvent> {
 
         private PlayerProfile profile;
-        private CatchPokemonRequirement requirement;
+        public CatchPokemonRequirement requirement;
         private int progressAmount;
 
         public CatchPokemonProgression(PlayerProfile profile, CatchPokemonRequirement requirement) {
@@ -98,7 +98,7 @@ public class CatchPokemonRequirement implements Requirement {
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
 
-            if (StringUtils.doesStringContainCategory(requirement.pokename, pokename)) {
+            if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                 return false;
             }
 
@@ -141,7 +141,6 @@ public class CatchPokemonRequirement implements Requirement {
         public double getPercentageComplete() {
             return (double) progressAmount / requirement.amount;
         }
-
 
         @Override
         public Progression loadFrom(UUID uuid, YamlConfig configurationSection) {

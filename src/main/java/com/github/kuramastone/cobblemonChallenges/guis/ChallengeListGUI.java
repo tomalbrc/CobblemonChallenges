@@ -4,6 +4,7 @@ import com.github.kuramastone.cobblemonChallenges.CobbleChallengeAPI;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.challenges.Challenge;
 import com.github.kuramastone.cobblemonChallenges.challenges.ChallengeList;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.MilestoneTimePlayedRequirement;
 import com.github.kuramastone.cobblemonChallenges.gui.GuiConfig;
 import com.github.kuramastone.cobblemonChallenges.gui.SimpleWindow;
 import com.github.kuramastone.cobblemonChallenges.gui.WindowItem;
@@ -35,7 +36,12 @@ public class ChallengeListGUI {
         for (Challenge challenge : challengeList.getChallengeMap()) {
             WindowItem item = new WindowItem(window, new ChallengeItem(window, profile, challenge));
             if (challenge.doesNeedSelection() && profile.isChallengeInProgress(challenge.getName()))
-                item.setAutoUpdate(20, () -> profile.isChallengeInProgress(challenge.getName()));
+                item.setAutoUpdate(20, () ->
+                        // check if this challenge requirement should auto-update
+                        challenge.getRequirements().stream().anyMatch(it -> it instanceof MilestoneTimePlayedRequirement)
+                                // check if challenge has a timer that needs ticking
+                                || profile.isChallengeInProgress(challenge.getName())
+                );
             item.setRunnableOnClick(onChallengeClick(challenge, item));
             contents.add(item);
         }

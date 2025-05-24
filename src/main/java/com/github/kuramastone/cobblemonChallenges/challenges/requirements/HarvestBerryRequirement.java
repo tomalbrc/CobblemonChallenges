@@ -83,7 +83,7 @@ public class HarvestBerryRequirement implements Requirement {
 
             String itemName = event.getBerry().item().berry().getIdentifier().toString();
 
-            if (!StringUtils.doesStringContainCategory(itemName, requirement.berryType)) {
+            if (!StringUtils.doesStringContainCategory(requirement.berryType.split("/"), itemName)) {
                 return false;
             }
 

@@ -128,7 +128,7 @@ public class DefeatBattlerRequirement implements Requirement {
             }
 
             // check if acceptable requirements contains any of the enemytypes we inserted
-            if (!StringUtils.doesStringContainCategory(enemyType.toString(), requirement.enemyType)) {
+            if (!StringUtils.doesStringContainCategory(requirement.enemyType.split("/"), enemyType.toString())) {
                 return false;
             }
 

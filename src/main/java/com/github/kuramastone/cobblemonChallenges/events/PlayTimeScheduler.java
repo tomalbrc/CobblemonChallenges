@@ -5,7 +5,6 @@ import com.github.kuramastone.cobblemonChallenges.listeners.ChallengeListener;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,15 +21,15 @@ public class PlayTimeScheduler {
 
         // trigger every 30 seconds
         if (currentTick % (30 * 20) == 0) {
-            thirtySecondsTick();
+            oneSecondTick();
         }
     }
 
-    private static void thirtySecondsTick() {
+    private static void oneSecondTick() {
         for (ServerPlayer player : CobbleChallengeMod.getMinecraftServer().getPlayerList().getPlayers()) {
             if (cachedOnlinePlayers.contains(player.getUUID())) {
                 PlayerProfile profile = CobbleChallengeMod.instance.getAPI().getOrCreateProfile(player.getUUID());
-                ChallengeListener.on30SecondsPlayed(new Played30SecondsEvent(profile));
+                ChallengeListener.on1SecondPlayed(new Played1SecondEvent(profile));
             }
         }
 

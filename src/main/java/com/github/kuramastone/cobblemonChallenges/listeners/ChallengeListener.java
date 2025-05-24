@@ -99,7 +99,7 @@ public class ChallengeListener {
         return null;
     }
 
-    public static void on30SecondsPlayed(Played30SecondsEvent event) {
+    public static void on1SecondPlayed(Played1SecondEvent event) {
         passEvent(event, event.getPlayerProfile().getPlayerEntity());
     }
 

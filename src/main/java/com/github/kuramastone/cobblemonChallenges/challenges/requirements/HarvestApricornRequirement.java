@@ -80,7 +80,7 @@ public class HarvestApricornRequirement implements Requirement {
 
             Apricorn type = event.getApricorn();
 
-            if(!StringUtils.doesStringContainCategory(type.toString(), requirement.apricornType)) {
+            if(!StringUtils.doesStringContainCategory(requirement.apricornType.split("/"), type.toString())) {
                 return false;
             }
 

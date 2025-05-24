@@ -3,7 +3,7 @@ package com.github.kuramastone.cobblemonChallenges.challenges.requirements;
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
 import com.github.kuramastone.bUtilities.yaml.YamlKey;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
-import com.github.kuramastone.cobblemonChallenges.events.Played30SecondsEvent;
+import com.github.kuramastone.cobblemonChallenges.events.Played1SecondEvent;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class MilestoneTimePlayedRequirement implements Requirement {
     }
 
     // Progression class to track time played progress
-    public static class MilestoneTimePlayedProgression implements Progression<Played30SecondsEvent> {
+    public static class MilestoneTimePlayedProgression implements Progression<Played1SecondEvent> {
 
         private PlayerProfile profile;
         private MilestoneTimePlayedRequirement requirement;
@@ -47,12 +47,12 @@ public class MilestoneTimePlayedRequirement implements Requirement {
         }
 
         @Override
-        public Class<Played30SecondsEvent> getType() {
-            return Played30SecondsEvent.class;
+        public Class<Played1SecondEvent> getType() {
+            return Played1SecondEvent.class;
         }
 
         @Override
-        public boolean meetsCriteria(Played30SecondsEvent event) {
+        public boolean meetsCriteria(Played1SecondEvent event) {
             // Each event fired counts for 30 seconds of playtime
             return true;
         }
@@ -66,7 +66,7 @@ public class MilestoneTimePlayedRequirement implements Requirement {
         public void progress(Object obj) {
             if (matchesMethod(obj)) {
                 if (meetsCriteria(getType().cast(obj))) {
-                    progressAmount += 30;
+                    progressAmount += 1;
                     progressAmount = Math.min(progressAmount, this.requirement.totalTime);
                 }
             }

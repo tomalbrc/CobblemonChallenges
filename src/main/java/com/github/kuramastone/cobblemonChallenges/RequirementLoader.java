@@ -2,6 +2,7 @@ package com.github.kuramastone.cobblemonChallenges;
 
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
 import com.github.kuramastone.cobblemonChallenges.challenges.requirements.*;
+import com.github.kuramastone.cobblemonChallenges.events.RegisterRequirementsEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,10 @@ public class RequirementLoader {
         register(FossilRevivedRequirement.class);
 
         register(LoginRequirement.class);
+
+        // register
+        RegisterRequirementsEvent.EVENT.invoker().onRegistration();
+
     }
 
     public static void register(Class<? extends Requirement> clazz) {

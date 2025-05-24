@@ -5,6 +5,7 @@ import com.github.kuramastone.bUtilities.configs.ItemConfig;
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
 import com.github.kuramastone.bUtilities.yaml.YamlObject;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
+import com.github.kuramastone.cobblemonChallenges.events.RegisterMessagesEvent;
 import com.github.kuramastone.cobblemonChallenges.gui.GuiConfig;
 import com.github.kuramastone.cobblemonChallenges.gui.ItemProvider;
 import com.github.kuramastone.cobblemonChallenges.gui.WindowItem;
@@ -27,7 +28,14 @@ public class ConfigOptions {
     private GuiConfig menuConfig; // base challenge menu
     private Map<String, GuiConfig> challengeConfigs; // config per challenge
 
-    public ConfigOptions(YamlConfig config) {
+    public ConfigOptions() {
+
+    }
+
+    public void load() {
+        YamlConfig config = new YamlConfig(CobbleChallengeMod.defaultDataFolder(), null, null,
+                "config.yml", getClass());
+
         YamlConfig.loadFromYaml(this, config);
         menuConfig = GuiConfig.load(config.getSection("base-menu"));
         loadMessages(config);
@@ -43,7 +51,7 @@ public class ConfigOptions {
 
         challengeConfigs = new HashMap<>();
         for (File yamlFile : YamlConfig.getYamlFiles(parentFolder)) {
-            YamlConfig config = new YamlConfig(yamlFile.getParentFile(), null, null,yamlFile.getName(), getClass());
+            YamlConfig config = new YamlConfig(yamlFile.getParentFile(), null, null, yamlFile.getName(), getClass());
 
             // remove ending
             String name = yamlFile.getName();
@@ -71,10 +79,10 @@ public class ConfigOptions {
 
             String string;
             Object obj = config.getObject(key);
-            if(obj instanceof List<?> list) {
+            if (obj instanceof List<?> list) {
                 string = String.join("\n", list.toArray(new String[0]));
             }
-            else if(obj instanceof String objStr) {
+            else if (obj instanceof String objStr) {
                 string = objStr;
             }
             else {
@@ -83,6 +91,8 @@ public class ConfigOptions {
 
             this.messages.put(subkey, new ComponentEditor(string));
         }
+
+        RegisterMessagesEvent.EVENT.invoker().onRegistration();
     }
 
     public ItemStack getCompletedChallengeItem() {

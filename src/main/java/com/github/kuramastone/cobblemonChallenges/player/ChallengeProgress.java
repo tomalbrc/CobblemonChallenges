@@ -1,14 +1,14 @@
 package com.github.kuramastone.cobblemonChallenges.player;
 
-import com.github.kuramastone.cobblemonChallenges.challenges.requirements.MineBlockRequirement;
-import com.github.kuramastone.cobblemonChallenges.challenges.requirements.PlaceBlockRequirement;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.*;
 import com.github.kuramastone.cobblemonChallenges.events.ChallengeCompletedEvent;
 import com.github.kuramastone.cobblemonChallenges.listeners.ChallengeListener;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeAPI;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.challenges.Challenge;
 import com.github.kuramastone.cobblemonChallenges.challenges.ChallengeList;
-import com.github.kuramastone.cobblemonChallenges.challenges.requirements.Progression;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -123,7 +123,17 @@ public class ChallengeProgress {
         StringBuilder sb = new StringBuilder();
 
         for (Pair<String, Progression<?>> set : this.progressionMap) {
-            String reqTitle = api.getMessage("requirements.progression-shorthand.%s".formatted(set.getKey().toLowerCase())).getText();
+
+            String pokename = "{pokename}";
+            if(set.getValue() instanceof CatchPokemonRequirement.CatchPokemonProgression prog) {
+                pokename = prog.requirement.pokename;
+            }
+            else if(set.getValue() instanceof EvolvePokemonRequirement.EvolvePokemonProgression prog) {
+                pokename = prog.requirement.pokename;
+            }
+
+            String reqTitle = api.getMessage("requirements.progression-shorthand.%s".formatted(set.getKey().toLowerCase())).getText()
+                    .replace("{pokename}", Character.toUpperCase(pokename.charAt(0)) + pokename.substring(1)).toLowerCase();
             reqTitle = (reqTitle == null) ? set.getKey() : reqTitle;
             String blockData = "";
 

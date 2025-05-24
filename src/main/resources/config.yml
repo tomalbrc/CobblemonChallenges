@@ -6,16 +6,17 @@ Messages:
   issues:
     unknown_challenge_list: "{prefix} &cUnknown challenge &e{challenge_list}&c."
   progression:
-    # If the challenge is not a "mined_block" challenge, it will default to an empty string.
-    progression-entry: "{block_data?}{requirement-title}: {progression-string}"
+    # If the challenge is not a "mined_block/placed_block" challenge, "{block_data?} will default to an empty string.
+    progression-entry: "&e{block_data?}&7{requirement-title}: &f{progression-string}"
   commands:
     opening-base-gui: "{prefix} &7Complete and claim rewards from challenges here!"
     reload: "{prefix} &2Messages and guis have been reloaded!"
+    restart: "{prefix} &2This player has had their challenge history reset!"
   requirements:
     # When listing a player's progress on a challenge, these will be the prefix for that
     progression-shorthand:
-      catch_pokemon: "Captured"
-      evolve_pokemon: "Evolved"
+      catch_pokemon: "{pokename} Captured"
+      evolve_pokemon: "{pokename} Evolved"
       defeat_battler: "Battles Won"
       harvest_apricorn: "Apricorns Harvested"
       harvest_berry: "Berries Harvested"
@@ -93,7 +94,7 @@ challenges:
   active-challenge-item: # Will only replace material of the challenge, not title or lore
     material: CLOCK
   completed-challenge-item: # Will only replace material of the challenge, not title or lore
-    material: GREEN_STAINED_GLASS_PANE
+    material: END_CRYSTAL
 
 # These are examples that will not be loaded. Use this as a reference for what options are available
 # pokename/any: Can be a specific Pokémon name or any. Can include multiple options such as "bulbasaur/ivysaur/venusaur"
@@ -142,10 +143,10 @@ triggers:
     type: any/stone
     amount: 5
 
-  harvested_apricorn: # Harvest an apricorn
+  harvest_apricorn: # Harvest an apricorn
     type: any
     amount: 1
-  harvested_berry: # Harvest a berry
+  harvest_berry: # Harvest a berry
     type: any
     amount: 1
   milestone_time_played: #Playtime tracker. Counts upwards in 30 second increments

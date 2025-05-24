@@ -104,7 +104,7 @@ public class LevelUpToRequirement implements Requirement {
                 return false;
             }
 
-            if (StringUtils.doesStringContainCategory(requirement.pokename, pokename)) {
+            if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                 return false;
             }
 

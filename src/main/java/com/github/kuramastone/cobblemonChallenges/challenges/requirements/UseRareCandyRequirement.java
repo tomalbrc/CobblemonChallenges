@@ -59,7 +59,7 @@ public class UseRareCandyRequirement implements Requirement {
             String pokemonName = event.getPokemon().getSpecies().getName();
 
             // Check if the Pokémon name meets the requirement
-            return StringUtils.doesStringContainCategory(pokemonName, requirement.pokename);
+            return StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokemonName);
         }
 
         @Override

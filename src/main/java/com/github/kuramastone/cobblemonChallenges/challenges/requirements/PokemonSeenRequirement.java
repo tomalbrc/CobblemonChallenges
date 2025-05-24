@@ -78,7 +78,7 @@ public class PokemonSeenRequirement implements Requirement {
         @Override
         public boolean meetsCriteria(PokemonSeenEvent event) {
 
-            if (!StringUtils.doesStringContainCategory(event.getPokemon().getSpecies().getName(), requirement.pokename)) {
+            if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), event.getPokemon().getSpecies().getName())) {
                 return false;
             }
 

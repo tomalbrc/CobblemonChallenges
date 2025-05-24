@@ -259,4 +259,16 @@ public class PlayerProfile {
 
         }
     }
+
+    public void resetChallenges() {
+        resetProgress();
+        completedChallenges.clear();
+        rewardsToGive.clear();
+
+        addUnrestrictedChallenges();
+    }
+
+    private void resetProgress() {
+        activeChallenges.clear();
+    }
 }
