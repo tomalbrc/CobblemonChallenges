@@ -180,4 +180,12 @@ public class ChallengeProgress {
                 "activeChallengeName=" + activeChallenge.getName() +
                 '}';
     }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
 }

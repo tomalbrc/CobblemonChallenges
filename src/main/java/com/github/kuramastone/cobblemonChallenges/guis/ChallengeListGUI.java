@@ -36,7 +36,7 @@ public class ChallengeListGUI {
         for (Challenge challenge : challengeList.getChallengeMap()) {
             WindowItem item = new WindowItem(window, new ChallengeItem(window, profile, challenge));
             if (challenge.doesNeedSelection() && profile.isChallengeInProgress(challenge.getName()))
-                item.setAutoUpdate(20, () ->
+                item.setAutoUpdate(15, () ->
                         // check if this challenge requirement should auto-update
                         challenge.getRequirements().stream().anyMatch(it -> it instanceof MilestoneTimePlayedRequirement)
                                 // check if challenge has a timer that needs ticking
@@ -51,10 +51,10 @@ public class ChallengeListGUI {
 
     private Runnable onChallengeClick(Challenge challenge, WindowItem item) {
         return () -> {
-            if (!profile.isChallengeCompleted(challenge.getName()) && challenge.doesNeedSelection()) {
+            if (!profile.isChallengeInProgress(challenge.getName()) && !profile.isChallengeCompleted(challenge.getName()) && challenge.doesNeedSelection()) {
                 profile.addActiveChallenge(challengeList, challenge);
                 profile.checkCompletion(challengeList);
-                item.setAutoUpdate(20, () -> true); // set to auto update to allow timer to keep updating
+                item.setAutoUpdate(10, () -> true); // set to auto update to allow timer to keep updating
                 item.notifyWindow();
             }
         };

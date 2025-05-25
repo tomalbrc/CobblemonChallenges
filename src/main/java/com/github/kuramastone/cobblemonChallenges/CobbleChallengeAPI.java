@@ -77,6 +77,9 @@ public class CobbleChallengeAPI implements SimpleAPI {
                                 ChallengeProgress progress = list.buildNewProgressForQuest(challenge, profile);
                                 YamlConfig challengeSection = listSection.getSection(strChallenge);
 
+                                progress.setStartTime(challengeSection.containsKey("startTime") ?
+                                        challengeSection.getLong("startTime") : System.currentTimeMillis());
+
                                 // iterate over each requirement for challenge
                                 int index = 0;
                                 for (Pair<String, Progression<?>> progSet : progress.getProgressionMap()) {
@@ -122,9 +125,14 @@ public class CobbleChallengeAPI implements SimpleAPI {
 
                 for (Map.Entry<String, List<ChallengeProgress>> set : profile.getActiveChallengesMap().entrySet()) {
                     for (ChallengeProgress cp : set.getValue()) {
+                        YamlConfig challengeSection = profileEntry.getOrCreateSection(
+                                "progression.%s.%s".formatted(set.getKey(), cp.getActiveChallenge().getName()));
+                        challengeSection.set("startTime", cp.getStartTime());
                         int index = 0;
                         for (Pair<String, Progression<?>> progSet : cp.getProgressionMap()) {
-                            YamlConfig progSection = profileEntry.getOrCreateSection("progression.%s.%s.%s.%s".formatted(set.getKey(), cp.getActiveChallenge().getName(), index++, progSet.getKey()));
+                            YamlConfig progSection = challengeSection.getOrCreateSection(
+                                    "%s.%s"
+                                            .formatted(index++, progSet.getKey()));
                             progSet.getValue().writeTo(progSection);
                         }
                     }
