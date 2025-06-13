@@ -24,14 +24,14 @@ public class DefeatBattlerRequirement implements Requirement {
     public static final String ID = "Defeat_Battler";
 
     @YamlKey("pokename")
-    private String pokename = "any";
+    public String pokename = "any";
     @YamlKey("amount")
     private int amount = 1;
 
     @YamlKey("shiny")
     private boolean shiny = false;
     @YamlKey("pokemon_type")
-    private String pokemon_type = "any";
+    public String pokemon_type = "any";
     @YamlKey("ball")
     private String ball = "any";
     @YamlKey("time_of_day")
@@ -67,7 +67,7 @@ public class DefeatBattlerRequirement implements Requirement {
     public static class DefeatPokemonProgression implements Progression<BattleVictoryEvent> {
 
         private PlayerProfile profile;
-        private DefeatBattlerRequirement requirement;
+        public DefeatBattlerRequirement requirement;
         private int progressAmount;
 
         public DefeatPokemonProgression(PlayerProfile profile, DefeatBattlerRequirement requirement) {
@@ -141,8 +141,7 @@ public class DefeatBattlerRequirement implements Requirement {
                 boolean is_legendary = pokemon.isLegendary();
                 boolean is_ultra_beast = pokemon.isUltraBeast();
 
-                if (!requirement.pokename.toLowerCase().startsWith("any") &&
-                        !requirement.pokename.toLowerCase().contains(pokename.toLowerCase())) {
+                if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                     continue;
                 }
 
@@ -150,8 +149,7 @@ public class DefeatBattlerRequirement implements Requirement {
                     continue;
                 }
 
-                if (!requirement.pokemon_type.toLowerCase().startsWith("any") &&
-                        !types.stream().map(ElementalType::toString).anyMatch(requirement.pokemon_type::equalsIgnoreCase)) {
+                if (types.stream().noneMatch(it -> StringUtils.doesStringContainCategory(requirement.pokemon_type.split("/"), it.getName()))) {
                     continue;
                 }
 

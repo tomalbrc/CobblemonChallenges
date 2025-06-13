@@ -108,8 +108,7 @@ public class EvolvePokemonRequirement implements Requirement {
                 return false;
             }
 
-            if (!requirement.pokemon_type.toLowerCase().startsWith("any") &&
-                    !types.stream().map(ElementalType::toString).anyMatch(requirement.pokemon_type::equalsIgnoreCase)) {
+            if (types.stream().noneMatch(it -> StringUtils.doesStringContainCategory(requirement.pokemon_type.split("/"), it.getName()))) {
                 return false;
             }
 

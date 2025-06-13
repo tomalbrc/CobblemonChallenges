@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
     public static boolean doesStringContainCategory(String[] searchList, String actual) {
+
+        actual = actual.replaceAll("/", "");
+
         boolean doesStringContainCategory = false;
         for (String enemyCategory : searchList) {
             if (enemyCategory.equalsIgnoreCase("any") ||

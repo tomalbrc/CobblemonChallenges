@@ -125,27 +125,38 @@ public class ChallengeProgress {
         for (Pair<String, Progression<?>> set : this.progressionMap) {
 
             String pokename = "{pokename}";
-            if(set.getValue() instanceof CatchPokemonRequirement.CatchPokemonProgression prog) {
-                pokename = prog.requirement.pokename;
-            }
-            else if(set.getValue() instanceof EvolvePokemonRequirement.EvolvePokemonProgression prog) {
-                pokename = prog.requirement.pokename;
-            }
-
-            String reqTitle = api.getMessage("requirements.progression-shorthand.%s".formatted(set.getKey().toLowerCase())).getText()
-                    .replace("{pokename}", Character.toUpperCase(pokename.charAt(0)) + pokename.substring(1)).toLowerCase();
-            reqTitle = (reqTitle == null) ? set.getKey() : reqTitle;
+            String battlerData = "{battlerData}";
             String blockData = "";
+            if (set.getValue() instanceof CatchPokemonRequirement.CatchPokemonProgression prog) {
+                pokename = prog.requirement.pokename;
+            }
+            else if (set.getValue() instanceof EvolvePokemonRequirement.EvolvePokemonProgression prog) {
+                pokename = prog.requirement.pokename;
+            }
+            else if (set.getValue() instanceof DefeatBattlerRequirement.DefeatPokemonProgression prog) {
+                pokename = prog.requirement.pokename;
 
-            if (set.getValue() instanceof MineBlockRequirement.MineBlockProgression mineBlockProgression)
+                if(!prog.requirement.pokemon_type.equalsIgnoreCase("any")) {
+                    battlerData = prog.requirement.pokemon_type;
+                    battlerData = Character.toUpperCase(battlerData.charAt(0)) + battlerData.substring(1);
+                }
+            }
+            else if (set.getValue() instanceof MineBlockRequirement.MineBlockProgression mineBlockProgression)
                 blockData = getPrettyBlockTypeOfFirst(mineBlockProgression.requirement.blockType) + " ";
             else if (set.getValue() instanceof PlaceBlockRequirement.PlaceBlockProgression placeBlockProgression)
                 blockData = getPrettyBlockTypeOfFirst(placeBlockProgression.requirement.blockType) + " ";
 
+            pokename = Character.toUpperCase(pokename.charAt(0)) + pokename.substring(1);
+
+            String reqTitle = api.getMessage("requirements.progression-shorthand.%s".formatted(set.getKey().toLowerCase())).getText()
+                    .replace("{battlerData}", battlerData)
+                    .replace("{pokename}", pokename)
+                    .replace("{blockData}", blockData)
+                    .replace("  ", " ");
+
             sb.append(api.getMessage("progression.progression-entry",
-                    "{block_data?}", blockData,
                     "{requirement-title}", reqTitle,
-                    "{progression-string}", set.getValue().getProgressString()).getText()
+                    "{progression-string}", set.getValue().getProgressString()).getText().replace("{block_data?}", "")
             ).append("\n");
         }
 
@@ -154,6 +165,10 @@ public class ChallengeProgress {
     }
 
     private String getPrettyBlockTypeOfFirst(String blockIdentifierGroup) {
+        if (blockIdentifierGroup.toLowerCase().startsWith("any")) {
+            return "Any";
+        }
+
         String[] blockIdentifierArray = blockIdentifierGroup.split("/");
         StringBuilder builder = new StringBuilder();
         // only add first block to list

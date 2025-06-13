@@ -6,8 +6,7 @@ Messages:
   issues:
     unknown_challenge_list: "{prefix} &cUnknown challenge &e{challenge_list}&c."
   progression:
-    # If the challenge is not a "mined_block/placed_block" challenge, "{block_data?} will default to an empty string.
-    progression-entry: "&e{block_data?}&7{requirement-title}: &f{progression-string}"
+    progression-entry: "&7{requirement-title}: &f{progression-string}"
   commands:
     opening-base-gui: "{prefix} &7Complete and claim rewards from challenges here!"
     reload: "{prefix} &2Messages and guis have been reloaded!"
@@ -17,11 +16,11 @@ Messages:
     progression-shorthand:
       catch_pokemon: "{pokename} Captured"
       evolve_pokemon: "{pokename} Evolved"
-      defeat_battler: "Battles Won"
+      defeat_battler: "{battlerData} Battles Won"
       harvest_apricorn: "Apricorns Harvested"
       harvest_berry: "Berries Harvested"
-      mine_block: "Blocks Mined"
-      place_block: "Blocks Placed"
+      mine_block: "{blockData} Blocks Mined"
+      place_block: "{blockData} Blocks Placed"
       complete_challenge: "Challenges Completed"
       pokemon_scanned: "Pokemon Scanned"
       pokemon_seen: "Pokemon Seen"
