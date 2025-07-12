@@ -1,13 +1,17 @@
 package com.github.kuramastone.cobblemonChallenges.listeners;
 
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.berry.BerryHarvestEvent;
 import com.cobblemon.mod.common.api.events.farming.ApricornHarvestEvent;
+import com.cobblemon.mod.common.api.events.fishing.BobberSpawnPokemonEvent;
 import com.cobblemon.mod.common.api.events.pokedex.scanning.PokemonScannedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.*;
 import com.cobblemon.mod.common.api.events.pokemon.evolution.EvolutionCompleteEvent;
 import com.cobblemon.mod.common.api.events.pokemon.interaction.ExperienceCandyUseEvent;
+import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeAPI;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.events.*;
@@ -16,6 +20,9 @@ import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import kotlin.Unit;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public class ChallengeListener {
@@ -71,6 +78,22 @@ public class ChallengeListener {
                 passEvent(event, playerUUID);
             }
         }
+        return null;
+    }
+
+    public static Unit onFainted(BattleFaintedEvent event) {
+        var opponents = event.getKilled().getFacedOpponents();
+        Set<UUID> ids = new HashSet<>();
+        for (BattlePokemon battlePokemon : opponents) {
+            for (UUID playerUUID : battlePokemon.actor.getPlayerUUIDs()) {
+                ids.add(playerUUID);
+            }
+        }
+
+        for (UUID playerUUID : ids) {
+            passEvent(event, playerUUID);
+        }
+
         return null;
     }
 
@@ -136,5 +159,15 @@ public class ChallengeListener {
     public static void onPlayerJoin(PlayerJoinEvent event) {
         // delay this to allow player to fully join before triggering
         TickScheduler.scheduleLater(60L, () -> passEvent(event, event.getPlayer()));
+    }
+
+    public static Unit onBobberSpawnPokemon(BobberSpawnPokemonEvent.Post post) {
+        passEvent(post, Objects.requireNonNull(post.getBobber().getPlayerOwner()));
+        return null;
+    }
+
+    public static Unit onReleasePokemon(ReleasePokemonEvent.Post post) {
+        passEvent(post, post.getPlayer());
+        return null;
     }
 }
