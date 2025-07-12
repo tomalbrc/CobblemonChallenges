@@ -3,7 +3,10 @@ package com.github.kuramastone.cobblemonChallenges;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.github.kuramastone.cobblemonChallenges.commands.CommandHandler;
-import com.github.kuramastone.cobblemonChallenges.events.*;
+import com.github.kuramastone.cobblemonChallenges.events.BlockBreakEvent;
+import com.github.kuramastone.cobblemonChallenges.events.BlockPlaceEvent;
+import com.github.kuramastone.cobblemonChallenges.events.PlayTimeScheduler;
+import com.github.kuramastone.cobblemonChallenges.events.PlayerJoinEvent;
 import com.github.kuramastone.cobblemonChallenges.listeners.ChallengeListener;
 import com.github.kuramastone.cobblemonChallenges.listeners.TickScheduler;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
@@ -25,6 +28,7 @@ public class CobbleChallengeMod implements ModInitializer {
     public static final Logger logger = LogManager.getLogger(MODID);
     private static MinecraftServer minecraftServer;
     private CobbleChallengeAPI api;
+
 
     @Override
     public void onInitialize() {
@@ -78,6 +82,9 @@ public class CobbleChallengeMod implements ModInitializer {
         CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.HIGHEST, ChallengeListener::onPokemonCaptured);
         CobblemonEvents.POKEMON_SCANNED.subscribe(Priority.HIGHEST, ChallengeListener::onPokemonPokedexScanned);
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.HIGHEST, ChallengeListener::onBattleVictory);
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.HIGHEST, ChallengeListener::onFainted);
+        CobblemonEvents.BOBBER_SPAWN_POKEMON_POST.subscribe(Priority.HIGHEST, ChallengeListener::onBobberSpawnPokemon);
+        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.HIGHEST, ChallengeListener::onReleasePokemon);
         CobblemonEvents.EVOLUTION_COMPLETE.subscribe(Priority.HIGHEST, ChallengeListener::onEvolution);
         CobblemonEvents.APRICORN_HARVESTED.subscribe(Priority.HIGHEST, ChallengeListener::onApricornHarvest);
         CobblemonEvents.BERRY_HARVEST.subscribe(Priority.HIGHEST, ChallengeListener::onBerryHarvest);
@@ -88,6 +95,7 @@ public class CobbleChallengeMod implements ModInitializer {
         CobblemonEvents.LEVEL_UP_EVENT.subscribe(Priority.HIGHEST, ChallengeListener::onLevelUp);
         CobblemonEvents.TRADE_COMPLETED.subscribe(Priority.HIGHEST, ChallengeListener::onTradeCompleted);
         CobblemonEvents.FOSSIL_REVIVED.subscribe(Priority.HIGHEST, ChallengeListener::onFossilRevived);
+
     }
 
     public CobbleChallengeAPI getAPI() {
