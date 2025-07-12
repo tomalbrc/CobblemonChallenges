@@ -1,5 +1,6 @@
 package com.github.kuramastone.cobblemonChallenges.utils;
 
+import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.mojang.datafixers.util.Pair;
 
 import java.util.ArrayList;
@@ -163,14 +164,14 @@ public class StringUtils {
             if (remainingSeconds == 0) {
 
                 if(days == 1) {
-                    return "24 hours";
+                    return CobbleChallengeMod.instance.getAPI().getMessage("time.twenty-four-hours").getText();
                 }
                 else {
-                    return days + " days"; // Full day duration
+                    return days + " "+CobbleChallengeMod.instance.getAPI().getMessage("time.days").getText(); // Full day duration
                 }
 
             } else {
-                return days + (days == 1 ? " day " : " days ") + formatHHMMSS(remainingSeconds);
+                return days + (days == 1 ? " "+CobbleChallengeMod.instance.getAPI().getMessage("time.day").getText()+" " : " "+CobbleChallengeMod.instance.getAPI().getMessage("Message.time.days").getText()+" ") + formatHHMMSS(remainingSeconds);
             }
         } else {
             // For less than a day, just return in HH:mm:ss format

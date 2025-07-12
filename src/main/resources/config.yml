@@ -11,6 +11,10 @@ Messages:
     opening-base-gui: "{prefix} &7Complete and claim rewards from challenges here!"
     reload: "{prefix} &2Messages and guis have been reloaded!"
     restart: "{prefix} &2This player has had their challenge history reset!"
+  time:
+    day: "day"
+    days: "days"
+    twenty-four-hours: "24 hours"
   requirements:
     # When listing a player's progress on a challenge, these will be the prefix for that
     progression-shorthand:
