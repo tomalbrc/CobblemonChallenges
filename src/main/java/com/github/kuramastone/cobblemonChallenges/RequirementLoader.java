@@ -36,6 +36,10 @@ public class RequirementLoader {
 
         register(LoginRequirement.class);
 
+        register(DefeatPokemonRequirement.class);
+        register(FishPokemonRequirement.class);
+        register(ReleasePokemonRequirement.class);
+
         // register
         RegisterRequirementsEvent.EVENT.invoker().onRegistration();
 
