@@ -113,7 +113,7 @@ public class LevelUpToRequirement implements Requirement {
             }
 
             if (!requirement.pokemon_type.toLowerCase().startsWith("any") &&
-                    types.stream().map(ElementalType::toString).noneMatch(requirement.pokemon_type::equalsIgnoreCase)) {
+                    types.stream().map(ElementalType::getName).noneMatch(requirement.pokemon_type::equalsIgnoreCase)) {
                 return false;
             }
 

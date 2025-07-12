@@ -56,7 +56,6 @@ public class CatchPokemonRequirement implements Requirement {
 
     // Static nested Progression class
     public static class CatchPokemonProgression implements Progression<PokemonCapturedEvent> {
-
         private PlayerProfile profile;
         public CatchPokemonRequirement requirement;
         private int progressAmount;
@@ -107,7 +106,7 @@ public class CatchPokemonRequirement implements Requirement {
             }
 
             if (!requirement.pokemon_type.toLowerCase().startsWith("any") &&
-                    types.stream().map(ElementalType::toString).noneMatch(requirement.pokemon_type::equalsIgnoreCase)) {
+                    types.stream().map(ElementalType::getName).noneMatch(requirement.pokemon_type::equalsIgnoreCase)) {
                 return false;
             }
 

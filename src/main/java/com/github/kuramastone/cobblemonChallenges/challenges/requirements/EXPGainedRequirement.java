@@ -1,7 +1,6 @@
 package com.github.kuramastone.cobblemonChallenges.challenges.requirements;
 
 import com.cobblemon.mod.common.api.events.pokemon.ExperienceGainedPostEvent;
-import com.cobblemon.mod.common.api.events.pokemon.ExperienceGainedPostEvent;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
@@ -109,7 +108,7 @@ public class EXPGainedRequirement implements Requirement {
             }
 
             if (!requirement.pokemon_type.toLowerCase().startsWith("any") &&
-                    types.stream().map(ElementalType::toString).noneMatch(requirement.pokemon_type::equalsIgnoreCase)) {
+                    types.stream().map(ElementalType::getName).noneMatch(requirement.pokemon_type::equalsIgnoreCase)) {
                 return false;
             }
 
