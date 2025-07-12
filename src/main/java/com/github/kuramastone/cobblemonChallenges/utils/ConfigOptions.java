@@ -24,6 +24,8 @@ public class ConfigOptions {
     private ItemConfig activeChallengeItem;
     @YamlObject("challenges.completed-challenge-item")
     private ItemConfig completedChallengeItem;
+    @YamlObject("challenges.noperm-challenge-item")
+    private ItemConfig noPermChallengeItem;
 
     private GuiConfig menuConfig; // base challenge menu
     private Map<String, GuiConfig> challengeConfigs; // config per challenge
@@ -101,6 +103,10 @@ public class ConfigOptions {
 
     public ItemStack getActiveChallengeItem() {
         return FabricAdapter.toItemStack(activeChallengeItem);
+    }
+
+    public ItemStack getNoPermChallengeItem() {
+        return FabricAdapter.toItemStack(noPermChallengeItem);
     }
 
     public GuiConfig getMenuGuiConfig() {

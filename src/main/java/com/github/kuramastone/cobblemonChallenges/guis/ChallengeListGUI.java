@@ -6,9 +6,11 @@ import com.github.kuramastone.cobblemonChallenges.challenges.Challenge;
 import com.github.kuramastone.cobblemonChallenges.challenges.ChallengeList;
 import com.github.kuramastone.cobblemonChallenges.challenges.requirements.MilestoneTimePlayedRequirement;
 import com.github.kuramastone.cobblemonChallenges.gui.GuiConfig;
+import com.github.kuramastone.cobblemonChallenges.gui.ItemProvider;
 import com.github.kuramastone.cobblemonChallenges.gui.SimpleWindow;
 import com.github.kuramastone.cobblemonChallenges.gui.WindowItem;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
+import com.github.kuramastone.cobblemonChallenges.utils.PermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,13 @@ public class ChallengeListGUI {
 
         //window is already built aesthetically, but now we need to insert each challenge
         for (Challenge challenge : challengeList.getChallengeMap()) {
+            var perm = challenge.getPermission();
+            if (perm != null && !PermissionUtils.hasPermission(profile.getPlayerEntity(), perm)) {
+                WindowItem item = new WindowItem(window, new ItemProvider.ItemWrapper(CobbleChallengeMod.instance.getAPI().getConfigOptions().getNoPermChallengeItem()));
+                contents.add(item);
+                continue;
+            }
+
             WindowItem item = new WindowItem(window, new ChallengeItem(window, profile, challenge));
             if (challenge.doesNeedSelection() && profile.isChallengeInProgress(challenge.getName()))
                 item.setAutoUpdate(15, () ->
