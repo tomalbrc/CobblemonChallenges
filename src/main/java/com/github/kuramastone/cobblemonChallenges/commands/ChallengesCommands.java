@@ -49,14 +49,14 @@ public class ChallengesCommands {
     }
 
     @Subcommand("reload")
-    @CommandPermission("challenges.commands.reload")
+    @CommandPermission(value = "challenges.commands.reload", vanilla = 2)
     public void handleReloadCommand(FabricCommandActor actor) {
         api.reloadConfig();
         actor.sendRawMessage(FabricAdapter.adapt(api.getMessage("commands.reload")));
     }
 
     @CommandPlaceholder
-    @CommandPermission("challenges.commands.challenge")
+    @CommandPermission(value = "challenges.commands.challenge", vanilla = 2)
     public void handleChallengeListCommand(FabricCommandActor actor, @Optional ChallengeList challengeList) {
         try {
             ServerPlayer player = actor.requirePlayer();

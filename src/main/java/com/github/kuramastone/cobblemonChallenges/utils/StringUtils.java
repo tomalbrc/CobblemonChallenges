@@ -168,7 +168,7 @@ public class StringUtils {
                 }
 
             } else {
-                return days + (days == 1 ? " "+CobbleChallengeMod.instance.getAPI().getMessage("time.day").getText()+" " : " "+CobbleChallengeMod.instance.getAPI().getMessage("Message.time.days").getText()+" ") + formatHHMMSS(remainingSeconds);
+                return days + (days == 1 ? " "+CobbleChallengeMod.instance.getAPI().getMessage("time.day").getText()+" " : " "+CobbleChallengeMod.instance.getAPI().getMessage("time.days").getText()+" ") + formatHHMMSS(remainingSeconds);
             }
         } else {
             // For less than a day, just return in HH:mm:ss format
