@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.github.kuramastone.cobblemonChallenges.challenges.ChallengeList;
 import com.github.kuramastone.cobblemonChallenges.commands.ChallengeListArgument;
 import com.github.kuramastone.cobblemonChallenges.commands.ChallengesCommands;
+import com.github.kuramastone.cobblemonChallenges.commands.OldCommandHandler;
 import com.github.kuramastone.cobblemonChallenges.events.BlockBreakEvent;
 import com.github.kuramastone.cobblemonChallenges.events.BlockPlaceEvent;
 import com.github.kuramastone.cobblemonChallenges.events.PlayTimeScheduler;
@@ -46,8 +47,8 @@ public class CobbleChallengeMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> onStopped());
         startSaveScheduler();
         startRepeatableScheduler();
-//        OldCommandHandler.register();
-        registerCommands();
+        OldCommandHandler.register();
+//        registerCommands();
         registerTrackedEvents();
     }
 
