@@ -2,6 +2,7 @@ package com.github.kuramastone.cobblemonChallenges.utils;
 
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -15,13 +16,16 @@ public class StringUtils {
         actual = actual.replaceAll("/", "");
 
         boolean doesStringContainCategory = false;
-        for (String enemyCategory : searchList) {
-            if (enemyCategory.equalsIgnoreCase("any") ||
-                    enemyCategory.equalsIgnoreCase(actual)) {
+        for (String entry : searchList) {
+            if (entry.equalsIgnoreCase("any") ||
+                    entry.equalsIgnoreCase(actual)) {
                 doesStringContainCategory = true;
                 break;
             }
         }
+
+        LogUtils.getLogger().error("SEARCH: {} {} result: {}", searchList, actual, doesStringContainCategory);
+
         return doesStringContainCategory;
     }
 

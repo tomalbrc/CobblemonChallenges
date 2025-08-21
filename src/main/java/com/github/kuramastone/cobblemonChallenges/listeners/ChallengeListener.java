@@ -14,6 +14,9 @@ import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeAPI;
 import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.BreedPokemonRequirement;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.DrawPokemonRequirement;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.HatchPokemonRequirement;
 import com.github.kuramastone.cobblemonChallenges.events.*;
 import com.github.kuramastone.cobblemonChallenges.player.ChallengeProgress;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
@@ -168,6 +171,21 @@ public class ChallengeListener {
 
     public static Unit onReleasePokemon(ReleasePokemonEvent.Post post) {
         passEvent(post, post.getPlayer());
+        return null;
+    }
+
+    public static Unit onBreed(HatchPokemonRequirement.EggHatchedEventData data) {
+        passEvent(data, data.player());
+        return null;
+    }
+
+    public static Unit onConversion(BreedPokemonRequirement.BreedEventData data) {
+        passEvent(data, data.player());
+        return null;
+    }
+
+    public static Unit onDraw(DrawPokemonRequirement.DrawEventData data) {
+        passEvent(data, data.pokemon().getOwnerPlayer());
         return null;
     }
 }

@@ -1,6 +1,5 @@
 package com.github.kuramastone.cobblemonChallenges.challenges.requirements;
 
-import com.cobblemon.mod.common.api.events.pokemon.HatchEggEvent;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
@@ -9,21 +8,24 @@ import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.PixelmonUtils;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
+import me.neovitalism.neodaycare.utils.DaycareUtils;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class HatchEggRequirement implements Requirement {
-    public static final String ID = "hatch_egg";
+public class DrawPokemonRequirement implements Requirement {
+    public static final String ID = "draw_pokemon";
+
+    public record DrawEventData(ItemStack itemStack, Pokemon pokemon) {}
 
     @YamlKey("pokename")
     private String pokename = "any";
     @YamlKey("amount")
     private int amount = 1;
 
-    @YamlKey("shiny") 
+    @YamlKey("shiny")
     private boolean shiny = false;
     @YamlKey("pokemon_type")
     private String pokemon_type = "any";
@@ -35,8 +37,11 @@ public class HatchEggRequirement implements Requirement {
     private boolean is_legendary = false;
     @YamlKey("is_ultra_beast")
     private boolean is_ultra_beast = false;
+    @YamlKey("is_egg")
+    private boolean is_egg = false;
 
-    public HatchEggRequirement() {
+
+    public DrawPokemonRequirement() {
     }
 
     public Requirement load(YamlConfig section) {
@@ -51,25 +56,24 @@ public class HatchEggRequirement implements Requirement {
 
     @Override
     public Progression<?> buildProgression(PlayerProfile profile) {
-        return new HatchEggProgression(profile, this);
+        return new DrawPokemonProgression(profile, this);
     }
 
     // Static nested Progression class
-    public static class HatchEggProgression implements Progression<HatchEggEvent> {
-
+    public static class DrawPokemonProgression implements Progression<DrawEventData> {
         private PlayerProfile profile;
-        private HatchEggRequirement requirement;
+        private DrawPokemonRequirement requirement;
         private int progressAmount;
 
-        public HatchEggProgression(PlayerProfile profile, HatchEggRequirement requirement) {
+        public DrawPokemonProgression(PlayerProfile profile, DrawPokemonRequirement requirement) {
             this.profile = profile;
             this.requirement = requirement;
             this.progressAmount = 0;
         }
 
         @Override
-        public Class<HatchEggEvent> getType() {
-            return HatchEggEvent.class;
+        public Class<DrawEventData> getType() {
+            return DrawEventData.class;
         }
 
         @Override
@@ -87,15 +91,17 @@ public class HatchEggRequirement implements Requirement {
         }
 
         @Override
-        public boolean meetsCriteria(HatchEggEvent event) {
-            Pokemon pokemon = event.getEgg().create();
+        public boolean meetsCriteria(DrawEventData event) {
+            Pokemon pokemon = event.pokemon();
             String pokename = pokemon.getSpecies().getName();
             boolean shiny = pokemon.getShiny();
             List<ElementalType> types = StreamSupport.stream(pokemon.getTypes().spliterator(), false).toList();
-            String ballName = event.getEgg().getPokeball();
-            long time_of_day = event.getPlayer().level().getDayTime();
+            String ballName = pokemon.getCaughtBall().getName().toString();
+            long time_of_day = event.pokemon.getOwnerPlayer().level().getDayTime();
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
+
+            boolean is_egg = DaycareUtils.isEgg(pokemon);
 
             if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                 return false;
@@ -125,6 +131,10 @@ public class HatchEggRequirement implements Requirement {
             }
 
             if (requirement.is_ultra_beast && !is_ultra_beast) {
+                return false;
+            }
+
+            if (requirement.is_egg && !is_egg) {
                 return false;
             }
 

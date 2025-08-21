@@ -6,9 +6,11 @@ import com.github.kuramastone.cobblemonChallenges.challenges.ChallengeList;
 import com.github.kuramastone.cobblemonChallenges.gui.SimpleWindow;
 import com.github.kuramastone.cobblemonChallenges.gui.WindowItem;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
+import net.minecraft.world.inventory.ClickType;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class ChallengeMenuGUI {
 
@@ -47,10 +49,10 @@ public class ChallengeMenuGUI {
         }
     }
 
-    private Runnable onChallengeItemClick(ChallengeList linkedTo) {
-        return () -> {
+    private BiConsumer<ClickType, Integer> onChallengeItemClick(ChallengeList linkedTo) {
+        return (type, dragType) -> {
             //PixelChallengeMod.logger.warn(String.format("Opening challenges for list %s", linkedTo.getName()));
-            new ChallengeListGUI(api, profile, linkedTo, api.getConfigOptions().getChallengeGuiConfig(linkedTo.getName())).open();
+            if (type == ClickType.PICKUP && dragType == 0) new ChallengeListGUI(api, profile, linkedTo, api.getConfigOptions().getChallengeGuiConfig(linkedTo.getName())).open();
         };
     }
 

@@ -10,10 +10,8 @@ import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.PixelmonUtils;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class IncreaseLevelRequirement implements Requirement {
@@ -87,18 +85,16 @@ public class IncreaseLevelRequirement implements Requirement {
                     LevelUpEvent event = getType().cast(obj);
                     int levelsChanged = event.getNewLevel() - event.getOldLevel();
                     progressAmount = Math.min(requirement.amount, progressAmount + levelsChanged);
-                    event.getOldLevel();
                 }
             }
         }
 
         @Override
         public boolean meetsCriteria(LevelUpEvent event) {
-
             Pokemon pokemon = event.getPokemon();
             String pokename = pokemon.getSpecies().getName();
             boolean shiny = pokemon.getShiny();
-            List<ElementalType> types = StreamSupport.stream(pokemon.getTypes().spliterator(), false).collect(Collectors.toUnmodifiableList());
+            List<ElementalType> types = StreamSupport.stream(pokemon.getTypes().spliterator(), false).toList();
             String ballName = event.getPokemon().getCaughtBall().getName().toString();
             long time_of_day = event.getPokemon().getOwnerEntity().level().getDayTime();
             boolean is_legendary = pokemon.isLegendary();

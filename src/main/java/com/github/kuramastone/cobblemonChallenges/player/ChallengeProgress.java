@@ -82,8 +82,10 @@ public class ChallengeProgress {
             }
         }
 
-        //only play if this progression made it level up
-        if (isCompleted()) {
+        if (hasTimeRanOut()) {
+            timeRanOut();
+        }
+        else if (isCompleted()) { //only play if this progression made it level up
             completedActiveChallenge();
         }
     }

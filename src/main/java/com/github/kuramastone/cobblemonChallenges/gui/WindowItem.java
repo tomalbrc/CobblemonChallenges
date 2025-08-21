@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class WindowItem {
 
@@ -20,7 +22,7 @@ public class WindowItem {
     private SimpleWindow window;
     private ItemProvider builder;
 
-    private Runnable runnableOnClick; // runnable to run on click
+    private BiConsumer<ClickType, Integer> runnableOnClick; // runnable to run on click
     private List<String> commands; // commands to run on click
     private int pagesToTurn = 0; // pages to turn on click
 
@@ -31,7 +33,7 @@ public class WindowItem {
         this.builder = builder;
     }
 
-    public WindowItem(@Nullable SimpleWindow window, ItemProvider builder, Runnable runnableOnClick, List<String> commands, int pagesToTurn) {
+    public WindowItem(@Nullable SimpleWindow window, ItemProvider builder, BiConsumer<ClickType, Integer> runnableOnClick, List<String> commands, int pagesToTurn) {
         this.window = window;
         this.builder = builder;
         this.runnableOnClick = runnableOnClick;
@@ -72,7 +74,7 @@ public class WindowItem {
 
         // use runnable if set
         if (runnableOnClick != null) {
-            runnableOnClick.run();
+            runnableOnClick.accept(type, dragType);
         }
 
         // return nothing to the player's cursor by default
@@ -87,11 +89,11 @@ public class WindowItem {
         window.updateSlot(this);
     }
 
-    public Runnable getRunnableOnClick() {
+    public BiConsumer<ClickType, Integer> getRunnableOnClick() {
         return runnableOnClick;
     }
 
-    public void setRunnableOnClick(Runnable runnableOnClick) {
+    public void setRunnableOnClick(BiConsumer<ClickType, Integer> runnableOnClick) {
         this.runnableOnClick = runnableOnClick;
     }
 

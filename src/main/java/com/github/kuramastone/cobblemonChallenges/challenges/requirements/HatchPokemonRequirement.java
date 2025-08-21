@@ -1,6 +1,5 @@
 package com.github.kuramastone.cobblemonChallenges.challenges.requirements;
 
-import com.cobblemon.mod.common.api.events.pokemon.HatchEggEvent;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.github.kuramastone.bUtilities.yaml.YamlConfig;
@@ -9,21 +8,24 @@ import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.PixelmonUtils;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class HatchEggRequirement implements Requirement {
-    public static final String ID = "hatch_egg";
+public class HatchPokemonRequirement implements Requirement {
+    public static final String ID = "hatch_pokemon";
+
+    public record EggHatchedEventData(ServerPlayer player, Pokemon pokemon) {}
 
     @YamlKey("pokename")
     private String pokename = "any";
     @YamlKey("amount")
     private int amount = 1;
 
-    @YamlKey("shiny") 
+    @YamlKey("shiny")
     private boolean shiny = false;
     @YamlKey("pokemon_type")
     private String pokemon_type = "any";
@@ -36,7 +38,7 @@ public class HatchEggRequirement implements Requirement {
     @YamlKey("is_ultra_beast")
     private boolean is_ultra_beast = false;
 
-    public HatchEggRequirement() {
+    public HatchPokemonRequirement() {
     }
 
     public Requirement load(YamlConfig section) {
@@ -51,25 +53,24 @@ public class HatchEggRequirement implements Requirement {
 
     @Override
     public Progression<?> buildProgression(PlayerProfile profile) {
-        return new HatchEggProgression(profile, this);
+        return new HatchPokemonProgression(profile, this);
     }
 
     // Static nested Progression class
-    public static class HatchEggProgression implements Progression<HatchEggEvent> {
-
+    public static class HatchPokemonProgression implements Progression<EggHatchedEventData> {
         private PlayerProfile profile;
-        private HatchEggRequirement requirement;
+        private HatchPokemonRequirement requirement;
         private int progressAmount;
 
-        public HatchEggProgression(PlayerProfile profile, HatchEggRequirement requirement) {
+        public HatchPokemonProgression(PlayerProfile profile, HatchPokemonRequirement requirement) {
             this.profile = profile;
             this.requirement = requirement;
             this.progressAmount = 0;
         }
 
         @Override
-        public Class<HatchEggEvent> getType() {
-            return HatchEggEvent.class;
+        public Class<EggHatchedEventData> getType() {
+            return EggHatchedEventData.class;
         }
 
         @Override
@@ -87,13 +88,13 @@ public class HatchEggRequirement implements Requirement {
         }
 
         @Override
-        public boolean meetsCriteria(HatchEggEvent event) {
-            Pokemon pokemon = event.getEgg().create();
+        public boolean meetsCriteria(EggHatchedEventData event) {
+            Pokemon pokemon = event.pokemon();
             String pokename = pokemon.getSpecies().getName();
             boolean shiny = pokemon.getShiny();
             List<ElementalType> types = StreamSupport.stream(pokemon.getTypes().spliterator(), false).toList();
-            String ballName = event.getEgg().getPokeball();
-            long time_of_day = event.getPlayer().level().getDayTime();
+            String ballName = pokemon.getCaughtBall().getName().toString();
+            long time_of_day = event.player.level().getDayTime();
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
 

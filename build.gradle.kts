@@ -52,6 +52,9 @@ val modShade by configurations.creating {
 configurations.modImplementation.get().extendsFrom(modShade)
 
 repositories {
+    flatDir {
+        dirs("libs")
+    }
     mavenCentral()
     mavenLocal()
     maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
@@ -89,6 +92,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 
     includeAndImplement("com.github.kuramastone:BUtilities-Core:$bUtilitiesVersion")
+    modImplementation("me.neovitalism.neodaycare:neodaycare:1.3.4")
     includeAndImplement("net.kyori:adventure-api:4.17.0")
     includeAndImplement("net.kyori:examination-api:1.3.0")
     includeAndImplement("net.kyori:adventure-key:4.17.0")
@@ -188,8 +192,8 @@ tasks.remapJar {
     doLast {
         val outputJar = archiveFile.get().asFile
         val destinations = listOf(
-            file("/run/mods"),
-            file("/runClient/mods")
+            file("run/mods"),
+            file("runClient/mods")
         )
 
         destinations.forEach { dest ->

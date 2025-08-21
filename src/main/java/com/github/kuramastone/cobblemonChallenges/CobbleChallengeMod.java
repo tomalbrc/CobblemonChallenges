@@ -3,6 +3,9 @@ package com.github.kuramastone.cobblemonChallenges;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.github.kuramastone.cobblemonChallenges.challenges.ChallengeList;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.BreedPokemonRequirement;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.DrawPokemonRequirement;
+import com.github.kuramastone.cobblemonChallenges.challenges.requirements.HatchPokemonRequirement;
 import com.github.kuramastone.cobblemonChallenges.commands.ChallengeListArgument;
 import com.github.kuramastone.cobblemonChallenges.commands.ChallengesCommands;
 import com.github.kuramastone.cobblemonChallenges.commands.OldCommandHandler;
@@ -13,11 +16,14 @@ import com.github.kuramastone.cobblemonChallenges.events.PlayerJoinEvent;
 import com.github.kuramastone.cobblemonChallenges.listeners.ChallengeListener;
 import com.github.kuramastone.cobblemonChallenges.listeners.TickScheduler;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
+import me.neovitalism.neodaycare.api.NeoDaycareEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import revxrsal.commands.Lamp;
@@ -50,6 +56,7 @@ public class CobbleChallengeMod implements ModInitializer {
         OldCommandHandler.register();
 //        registerCommands();
         registerTrackedEvents();
+
     }
 
     private void registerCommands() {
@@ -114,6 +121,9 @@ public class CobbleChallengeMod implements ModInitializer {
         CobblemonEvents.TRADE_COMPLETED.subscribe(Priority.HIGHEST, ChallengeListener::onTradeCompleted);
         CobblemonEvents.FOSSIL_REVIVED.subscribe(Priority.HIGHEST, ChallengeListener::onFossilRevived);
 
+        NeoDaycareEvents.EGG_HATCHED.register((a,b) -> ChallengeListener.onBreed(new HatchPokemonRequirement.EggHatchedEventData(ServerPlayer.class.cast(a), b)));
+        NeoDaycareEvents.EGG_CREATE.register((a,b, c, d) -> ChallengeListener.onConversion(new BreedPokemonRequirement.BreedEventData(ServerPlayer.class.cast(a), b,c,d)));
+        NeoDaycareEvents.DRAW_EGG.register((a,b) -> ChallengeListener.onDraw(new DrawPokemonRequirement.DrawEventData(ItemStack.class.cast(a), b)));
     }
 
     public CobbleChallengeAPI getAPI() {

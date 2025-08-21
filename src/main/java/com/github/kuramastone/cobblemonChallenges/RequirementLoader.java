@@ -40,6 +40,10 @@ public class RequirementLoader {
         register(FishPokemonRequirement.class);
         register(ReleasePokemonRequirement.class);
 
+        register(HatchPokemonRequirement.class);
+        register(DrawPokemonRequirement.class);
+        register(BreedPokemonRequirement.class);
+
         // register
         RegisterRequirementsEvent.EVENT.invoker().onRegistration();
 

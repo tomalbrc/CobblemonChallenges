@@ -9,11 +9,14 @@ import com.github.kuramastone.cobblemonChallenges.gui.GuiConfig;
 import com.github.kuramastone.cobblemonChallenges.gui.ItemProvider;
 import com.github.kuramastone.cobblemonChallenges.gui.SimpleWindow;
 import com.github.kuramastone.cobblemonChallenges.gui.WindowItem;
+import com.github.kuramastone.cobblemonChallenges.player.ChallengeProgress;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.PermissionUtils;
+import net.minecraft.world.inventory.ClickType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class ChallengeListGUI {
 
@@ -29,6 +32,16 @@ public class ChallengeListGUI {
         this.challengeList = challengeList;
         window = new SimpleWindow(config);
         build();
+    }
+
+    boolean hasActiveType(PlayerProfile profile, Challenge challenge) {
+        for (ChallengeProgress activeChallenge : profile.getActiveChallenges()) {
+            var c = activeChallenge.getParentList().getChallengeMap().contains(challenge);
+            if (activeChallenge.getActiveChallenge().doesNeedSelection() && c)
+                return true;
+        }
+
+        return false;
     }
 
     private void build() {
@@ -58,11 +71,16 @@ public class ChallengeListGUI {
         window.setContents(contents);
     }
 
-    private Runnable onChallengeClick(Challenge challenge, WindowItem item) {
-        return () -> {
-            if (!profile.isChallengeInProgress(challenge.getName()) && !profile.isChallengeCompleted(challenge.getName()) && challenge.doesNeedSelection()) {
+    private BiConsumer<ClickType, Integer> onChallengeClick(Challenge challenge, WindowItem item) {
+        return (type, dragType) -> {
+            if (dragType == 0 && !hasActiveType(profile, challenge) && !profile.isChallengeInProgress(challenge.getName()) && !profile.isChallengeCompleted(challenge.getName()) && challenge.doesNeedSelection()) {
                 profile.addActiveChallenge(challengeList, challenge);
                 profile.checkCompletion(challengeList);
+                item.setAutoUpdate(10, () -> true); // set to auto update to allow timer to keep updating
+                item.notifyWindow();
+            } else if (dragType == 1 && !profile.isChallengeCompleted(challenge.getName()) && profile.isChallengeInProgress(challenge.getName()) && challenge.doesNeedSelection()) {
+                profile.removeActiveChallenge(profile.getActiveChallengeProgress(challenge.getName()));
+
                 item.setAutoUpdate(10, () -> true); // set to auto update to allow timer to keep updating
                 item.notifyWindow();
             }
