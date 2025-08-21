@@ -37,6 +37,8 @@ public class DrawPokemonRequirement implements Requirement {
     private boolean is_legendary = false;
     @YamlKey("is_ultra_beast")
     private boolean is_ultra_beast = false;
+    @YamlKey("is_mythical")
+    private boolean is_mythical = false;
     @YamlKey("is_egg")
     private boolean is_egg = false;
 
@@ -100,6 +102,7 @@ public class DrawPokemonRequirement implements Requirement {
             long time_of_day = event.pokemon.getOwnerPlayer().level().getDayTime();
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
+            boolean is_mythical = pokemon.isMythical();
 
             boolean is_egg = DaycareUtils.isEgg(pokemon);
 
@@ -135,6 +138,10 @@ public class DrawPokemonRequirement implements Requirement {
             }
 
             if (requirement.is_egg && !is_egg) {
+                return false;
+            }
+
+            if (requirement.is_mythical && !is_mythical) {
                 return false;
             }
 

@@ -35,6 +35,8 @@ public class HatchEggRequirement implements Requirement {
     private boolean is_legendary = false;
     @YamlKey("is_ultra_beast")
     private boolean is_ultra_beast = false;
+    @YamlKey("is_mythical")
+    private boolean is_mythical = false;
 
     public HatchEggRequirement() {
     }
@@ -96,6 +98,7 @@ public class HatchEggRequirement implements Requirement {
             long time_of_day = event.getPlayer().level().getDayTime();
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
+            boolean is_mythical = pokemon.isMythical();
 
             if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                 return false;
@@ -125,6 +128,10 @@ public class HatchEggRequirement implements Requirement {
             }
 
             if (requirement.is_ultra_beast && !is_ultra_beast) {
+                return false;
+            }
+
+            if (requirement.is_mythical && !is_mythical) {
                 return false;
             }
 

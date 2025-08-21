@@ -40,6 +40,8 @@ public class DefeatBattlerRequirement implements Requirement {
     private boolean is_legendary = false;
     @YamlKey("is_ultra_beast")
     private boolean is_ultra_beast = false;
+    @YamlKey("is_mythical")
+    private boolean is_mythical = false;
     @YamlKey("effectiveness")
     private String effectiveness = "any";
     @YamlKey("npc-player-gymleader-wild")
@@ -145,6 +147,7 @@ public class DefeatBattlerRequirement implements Requirement {
                 long time_of_day = CobbleChallengeMod.getMinecraftServer().getPlayerList().getPlayer(player.getUuid()).level().getDayTime();
                 boolean is_legendary = pokemon.isLegendary();
                 boolean is_ultra_beast = pokemon.isUltraBeast();
+                boolean is_mythical = pokemon.isMythical();
 
                 if (!StringUtils.doesStringContainCategory(requirement.pokename.split("/"), pokename)) {
                     continue;
@@ -175,6 +178,11 @@ public class DefeatBattlerRequirement implements Requirement {
                 if (requirement.is_ultra_beast && !is_ultra_beast) {
                     continue;
                 }
+
+                if (requirement.is_mythical && !is_mythical) {
+                    continue;
+                }
+
                 return true;
             }
 
