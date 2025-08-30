@@ -16,7 +16,7 @@ import com.github.kuramastone.cobblemonChallenges.events.PlayerJoinEvent;
 import com.github.kuramastone.cobblemonChallenges.listeners.ChallengeListener;
 import com.github.kuramastone.cobblemonChallenges.listeners.TickScheduler;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
-import me.neovitalism.neodaycare.api.NeoDaycareEvents;
+import dev.neovitalism.neodaycare.api.NeoDaycareEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

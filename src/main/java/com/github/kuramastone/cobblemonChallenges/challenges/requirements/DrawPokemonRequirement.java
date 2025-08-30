@@ -8,7 +8,7 @@ import com.github.kuramastone.cobblemonChallenges.CobbleChallengeMod;
 import com.github.kuramastone.cobblemonChallenges.player.PlayerProfile;
 import com.github.kuramastone.cobblemonChallenges.utils.PixelmonUtils;
 import com.github.kuramastone.cobblemonChallenges.utils.StringUtils;
-import me.neovitalism.neodaycare.utils.DaycareUtils;
+import dev.neovitalism.neodaycare.utils.DaycareUtils;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;

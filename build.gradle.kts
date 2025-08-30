@@ -92,7 +92,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 
     includeAndImplement("com.github.kuramastone:BUtilities-Core:$bUtilitiesVersion")
-    modImplementation("me.neovitalism.neodaycare:neodaycare:1.3.4")
+    modImplementation("me.neovitalism.neodaycare:neodaycare:1.4.1")
     includeAndImplement("net.kyori:adventure-api:4.17.0")
     includeAndImplement("net.kyori:examination-api:1.3.0")
     includeAndImplement("net.kyori:adventure-key:4.17.0")
