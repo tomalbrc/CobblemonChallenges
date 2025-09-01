@@ -57,7 +57,7 @@ public class HatchEggRequirement implements Requirement {
     }
 
     // Static nested Progression class
-    public static class HatchEggProgression implements Progression<HatchEggEvent> {
+    public static class HatchEggProgression implements Progression<HatchEggEvent.Post> {
 
         private PlayerProfile profile;
         private HatchEggRequirement requirement;
@@ -70,8 +70,8 @@ public class HatchEggRequirement implements Requirement {
         }
 
         @Override
-        public Class<HatchEggEvent> getType() {
-            return HatchEggEvent.class;
+        public Class<HatchEggEvent.Post> getType() {
+            return HatchEggEvent.Post.class;
         }
 
         @Override
@@ -89,12 +89,12 @@ public class HatchEggRequirement implements Requirement {
         }
 
         @Override
-        public boolean meetsCriteria(HatchEggEvent event) {
-            Pokemon pokemon = event.getEgg().create();
+        public boolean meetsCriteria(HatchEggEvent.Post event) {
+            Pokemon pokemon = event.getPokemon();
             String pokename = pokemon.getSpecies().getName();
             boolean shiny = pokemon.getShiny();
             List<ElementalType> types = StreamSupport.stream(pokemon.getTypes().spliterator(), false).toList();
-            String ballName = event.getEgg().getPokeball();
+            String ballName = event.getPokemon().getCaughtBall().getName().getPath();
             long time_of_day = event.getPlayer().level().getDayTime();
             boolean is_legendary = pokemon.isLegendary();
             boolean is_ultra_beast = pokemon.isUltraBeast();
